@@ -42,8 +42,7 @@
               </a>
             </li>
             <li>
-              <!-- Panel Admin kemungkinan pindah halaman, jadi tidak pakai smooth scroll -->
-              <a href="/admin" class="inline-block hover:text-white hover:translate-x-1 transition-all duration-300">
+              <a href="/login" class="inline-block hover:text-white hover:translate-x-1 transition-all duration-300">
                 &rarr; Panel Admin 
               </a>
             </li>
