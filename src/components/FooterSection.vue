@@ -17,33 +17,34 @@
           
           <ul class="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-4 text-emerald-100/80 text-sm">
             <li>
-              <a href="#" class="inline-block hover:text-white hover:translate-x-1 transition-all duration-300">
+              <a href="#" @click.prevent="scrollToSection('beranda')" class="inline-block hover:text-white hover:translate-x-1 transition-all duration-300">
                 &rarr; Beranda
               </a>
             </li>
             <li>
-              <a href="#" class="inline-block hover:text-white hover:translate-x-1 transition-all duration-300">
+              <a href="#" @click.prevent="scrollToSection('wisata')" class="inline-block hover:text-white hover:translate-x-1 transition-all duration-300">
                 &rarr; Wisata
               </a>
             </li>
             <li>
-              <a href="#" class="inline-block hover:text-white hover:translate-x-1 transition-all duration-300">
+              <a href="#" @click.prevent="scrollToSection('tentang-kami')" class="inline-block hover:text-white hover:translate-x-1 transition-all duration-300">
                 &rarr; Tentang Kami
               </a>
             </li>
             <li>
-              <a href="#" class="inline-block hover:text-white hover:translate-x-1 transition-all duration-300">
+              <a href="#" @click.prevent="scrollToSection('umkm')" class="inline-block hover:text-white hover:translate-x-1 transition-all duration-300">
                 &rarr; UMKM
               </a>
             </li>
             <li>
-              <a href="#" class="inline-block hover:text-white hover:translate-x-1 transition-all duration-300">
+              <a href="#" @click.prevent="scrollToSection('wilayah')" class="inline-block hover:text-white hover:translate-x-1 transition-all duration-300">
                 &rarr; Wilayah
               </a>
             </li>
             <li>
-              <a href="#" class="inline-block hover:text-white hover:translate-x-1 transition-all duration-300">
-                &rarr; Pannel Admin 
+              <!-- Panel Admin kemungkinan pindah halaman, jadi tidak pakai smooth scroll -->
+              <a href="/admin" class="inline-block hover:text-white hover:translate-x-1 transition-all duration-300">
+                &rarr; Panel Admin 
               </a>
             </li>
           </ul>
@@ -76,3 +77,20 @@
     </div>
   </footer>
 </template>
+
+<script setup>
+const scrollToSection = (id) => {
+  const element = document.getElementById(id);
+  
+  if (element) {
+    const navHeight = 80;
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.scrollY - navHeight;
+
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    });
+  }
+};
+</script>
