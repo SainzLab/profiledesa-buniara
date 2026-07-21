@@ -1,5 +1,5 @@
 <template>
-  <section id="tentang-kami" class="relative mt-16 pt-20 md:pt-32 pb-16 md:pb-24 px-6 md:px-8 max-w-7xl mx-auto bg-white overflow-hidden">
+  <section id="tentang-kami" class="relative mt-16 pt-20 md:pt-32 pb-16 md:pb-24 px-6 md:px-8 max-w-7xl mx-auto overflow-hidden">
     
     <div class="absolute top-10 left-0 w-72 h-72 bg-teal-50 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob"></div>
     <div class="absolute bottom-10 right-0 w-72 h-72 bg-green-50 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000"></div>

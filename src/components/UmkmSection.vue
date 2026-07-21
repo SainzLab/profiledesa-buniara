@@ -1,5 +1,5 @@
 <template>
-  <section class="py-24 px-4 md:px-8 bg-gray-50 overflow-hidden relative">
+  <section class="py-24 px-4 md:px-8 bg-white overflow-hidden relative">
     <div class="max-w-7xl mx-auto z-10 relative">
       
       <div id="umkm" class="text-center mb-16 px-4 fade-in-up">
