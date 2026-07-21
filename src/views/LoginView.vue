@@ -1,5 +1,64 @@
 <template>
-  <div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+  <div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative">
+    
+    <!-- ==================== POP-UP NOTIFIKASI (TOAST) ==================== -->
+    <Transition
+      enter-active-class="transform transition duration-300 ease-out"
+      enter-from-class="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
+      enter-to-class="translate-y-0 opacity-100 sm:translate-x-0"
+      leave-active-class="transition duration-200 ease-in"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
+    >
+      <div 
+        v-if="notif.show" 
+        class="fixed top-5 right-5 z-[200] max-w-md w-full bg-white rounded-2xl shadow-2xl border p-4 flex items-start space-x-4 transition-all duration-300"
+        :class="{
+          'border-emerald-200 bg-emerald-50/30': notif.type === 'success',
+          'border-red-200 bg-red-50/30': notif.type === 'error',
+          'border-blue-200 bg-blue-50/30': notif.type === 'info'
+        }"
+      >
+        <!-- Icon Success -->
+        <div v-if="notif.type === 'success'" class="p-2 bg-emerald-100 rounded-xl text-emerald-600 shrink-0">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+
+        <!-- Icon Error -->
+        <div v-else-if="notif.type === 'error'" class="p-2 bg-red-100 rounded-xl text-red-600 shrink-0">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </div>
+
+        <!-- Content Text -->
+        <div class="flex-1 pt-0.5">
+          <h4 class="text-sm font-bold" :class="{
+            'text-emerald-900': notif.type === 'success',
+            'text-red-900': notif.type === 'error'
+          }">
+            {{ notif.title }}
+          </h4>
+          <p class="text-xs text-gray-600 mt-1 leading-relaxed">
+            {{ notif.message }}
+          </p>
+        </div>
+
+        <!-- Close Button -->
+        <button 
+          @click="notif.show = false" 
+          class="text-gray-400 hover:text-gray-600 p-1 rounded-lg transition-colors"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </Transition>
+    <!-- ================================================================== -->
+
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
       <h2 class="mt-4 text-center text-3xl font-extrabold text-gray-900">
         Panel Admin
@@ -9,7 +68,7 @@
       </p>
     </div>
 
-    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md z-10">
       <div class="bg-white py-8 px-4 shadow-xl sm:rounded-2xl sm:px-10 border border-gray-100">
         <form class="space-y-6" @submit.prevent="handleLogin">
           
@@ -102,9 +161,24 @@ import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
 const router = useRouter();
 const isLoading = ref(false);
+
+const notif = ref({
+  show: false,
+  type: 'success', 
+  title: '',
+  message: ''
+});
+let notifTimeout = null;
+
+const showNotif = (type, title, message, duration = 4000) => {
+  if (notifTimeout) clearTimeout(notifTimeout);
+  notif.value = { show: true, type, title, message };
+  if (duration > 0) {
+    notifTimeout = setTimeout(() => { notif.value.show = false; }, duration);
+  }
+};
 
 const loginForm = reactive({
   email: '',
@@ -133,24 +207,29 @@ const handleLogin = async () => {
       const isAktif = data.user.is_aktif === 1 || data.user.is_aktif === true;
 
       if (!isAktif) {
-        alert('Akses Ditolak: Akun Anda telah dinonaktifkan oleh Super Admin. Silakan hubungi pengelola.');
+        showNotif('error', 'Akses Ditolak', 'Akun Anda telah dinonaktifkan oleh Administrator. Silakan hubungi pengelola.');
         localStorage.removeItem('token');
         localStorage.removeItem('user');
+        isLoading.value = false;
         return;
       }
 
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
       
-      alert('Login Berhasil! Selamat datang ' + data.user.nama);
-      router.push('/admin'); 
+      showNotif('success', 'Login Berhasil!', `Selamat datang kembali, ${data.user.nama}. Mengalihkan...`);
+      
+      setTimeout(() => {
+        router.push('/admin'); 
+      }, 800);
+
     } else {
-      alert(data.message);
+      showNotif('error', 'Gagal Masuk', data.message || 'Kredensial yang Anda masukkan salah.');
+      isLoading.value = false;
     }
   } catch (error) {
     console.error('Error saat login:', error);
-    alert('Terjadi kesalahan pada jaringan/server.');
-  } finally {
+    showNotif('error', 'Kesalahan Sistem', 'Terjadi kesalahan pada jaringan atau server.');
     isLoading.value = false;
   }
 };
