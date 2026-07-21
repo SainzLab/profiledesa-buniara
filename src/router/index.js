@@ -3,8 +3,11 @@ import HomeView from '../views/HomeView.vue'
 import LaporanView from '../views/LaporanView.vue'
 import LoginView from '../views/LoginView.vue'
 
-import AdminLayout from '../admin/AdminLayout.vue'
-import KontenWeb from '../views/KontenWeb.vue'
+import AdminView from '../views/AdminView.vue'
+import AdminLaporanView from '../views/AdminLaporanView.vue'
+import AdminWisataView from '../views/AdminWisataView.vue'
+import AdminUmkmView from '../views/AdminUmkmView.vue'
+import AdminPenggunaView from '../views/AdminPenggunaView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,18 +29,33 @@ const router = createRouter({
     },
     {
       path: '/admin',
-      component: AdminLayout,
-      children: [
-        {
-          path: '',
-          redirect: '/admin/konten'
-        },
-        {
-          path: 'konten',
-          name: 'admin-konten',
-          component: KontenWeb 
-        }
-      ]
+      name: 'admin',
+      component: AdminView
+    },
+    {
+      path: '/admin/konten',
+      name: 'admin-konten',
+      component: AdminView
+    },
+    {
+      path: '/admin/laporan', 
+      name: 'admin-laporan',
+      component: AdminLaporanView
+    },
+    {
+      path: '/admin/wisata', 
+      name: 'admin-wisata',
+      component: AdminWisataView
+    },
+    {
+      path: '/admin/umkm', 
+      name: 'admin-umkm',
+      component: AdminUmkmView
+    },
+    {
+      path: '/admin/pengguna', 
+      name: 'admin-pengguna',
+      component: AdminPenggunaView
     }
   ]
 })
