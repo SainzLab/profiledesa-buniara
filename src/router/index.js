@@ -29,7 +29,7 @@ const router = createRouter({
       path: '/login',
       name: 'admin-login',
       component: LoginView,
-      meta: { requiresGuest: true } // Menandakan halaman ini khusus untuk yang belum login
+      meta: { requiresGuest: true } 
     },
 
     // ==========================================
@@ -78,20 +78,16 @@ const router = createRouter({
 // NAVIGATION GUARD (Satpam Halaman)
 // ==========================================
 router.beforeEach((to, from, next) => {
-  // Mengecek apakah token ada di localStorage
   const isAuthenticated = localStorage.getItem('token') !== null;
 
-  // 1. Jika rute membutuhkan login dan user belum login
   if (to.meta.requiresAuth && !isAuthenticated) {
-    // Alihkan paksa ke halaman login
     next({ name: 'admin-login' });
   } 
-  // 2. Jika user sudah login tapi mencoba mengakses halaman login lagi
+  
   else if (to.meta.requiresGuest && isAuthenticated) {
-    // Alihkan kembali ke dashboard admin
     next({ name: 'admin' });
   } 
-  // 3. Jika aman, izinkan masuk ke halaman tujuan
+  
   else {
     next();
   }

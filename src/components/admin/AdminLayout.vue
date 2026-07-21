@@ -34,7 +34,6 @@
       </div>
     </Transition>
 
-    <!-- ==================== MODAL KONFIRMASI LOGOUT ==================== -->
     <Transition
       enter-active-class="transition-opacity duration-300"
       enter-from-class="opacity-0"
@@ -75,8 +74,7 @@
         </div>
       </div>
     </Transition>
-    <!-- ================================================================== -->
-
+    
     <aside class="w-64 bg-white border-r border-gray-200 flex flex-col justify-between">
       <div>
         <div class="h-20 flex items-center px-6 border-b border-transparent">
@@ -115,7 +113,6 @@
       </div>
 
       <div class="p-6">
-        <!-- Tombol Keluar sekarang memanggil Modal, bukan alert bawaan -->
         <button 
           @click="showLogoutModal = true"
           class="w-full flex justify-center items-center px-4 py-2 border border-red-200 text-sm font-medium rounded-lg text-red-600 bg-white hover:bg-red-50 transition-colors"

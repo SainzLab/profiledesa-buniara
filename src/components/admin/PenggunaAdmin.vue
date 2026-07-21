@@ -1,7 +1,6 @@
 <template>
   <div class="max-w-7xl mx-auto relative">
     
-    <!-- ==================== POP-UP NOTIFIKASI (TOAST) ==================== -->
     <Transition
       enter-active-class="transform transition duration-300 ease-out"
       enter-from-class="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
@@ -19,28 +18,25 @@
           'border-blue-200 bg-blue-50/30': notif.type === 'info'
         }"
       >
-        <!-- Icon Success -->
+
         <div v-if="notif.type === 'success'" class="p-2 bg-emerald-100 rounded-xl text-emerald-600 shrink-0">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
           </svg>
         </div>
 
-        <!-- Icon Error -->
         <div v-else-if="notif.type === 'error'" class="p-2 bg-red-100 rounded-xl text-red-600 shrink-0">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </div>
 
-        <!-- Icon Info -->
         <div v-else class="p-2 bg-blue-100 rounded-xl text-blue-600 shrink-0">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </div>
 
-        <!-- Content Text -->
         <div class="flex-1 pt-0.5">
           <h4 class="text-sm font-bold" :class="{
             'text-emerald-900': notif.type === 'success',
@@ -54,7 +50,6 @@
           </p>
         </div>
 
-        <!-- Close Button -->
         <button 
           @click="notif.show = false" 
           class="text-gray-400 hover:text-gray-600 p-1 rounded-lg transition-colors"
@@ -65,8 +60,7 @@
         </button>
       </div>
     </Transition>
-    <!-- ================================================================== -->
-
+  
     <div class="flex justify-between items-center mb-6">
       <div>
         <h2 class="text-2xl font-bold text-gray-900">Manajemen Pengguna</h2>
@@ -150,8 +144,6 @@
       </div>
     </div>
 
-    <!-- ==================== MODAL (Diperbaiki Overlay Backgroundnya) ==================== -->
-    <!-- Menggunakan bg-black/50 dan backdrop-blur-sm untuk transparansi pada Tailwind V3+ -->
     <Transition
       enter-active-class="transition-opacity duration-300"
       enter-from-class="opacity-0"
@@ -175,17 +167,17 @@
           <form @submit.prevent="simpanPengguna" class="p-6 space-y-4">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
-              <input type="text" v-model="formUser.nama" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-shadow">
+              <input type="text" v-model="formUser.nama" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm transition-shadow focus:outline-none focus:border-gray-400 text-gray-900">
             </div>
             
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-              <input type="email" v-model="formUser.email" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-shadow">
+              <input type="email" v-model="formUser.email" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm transition-shadow focus:outline-none focus:border-gray-400 text-gray-900">
             </div>
 
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Peran Akses</label>
-              <select v-model="formUser.role" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-shadow">
+              <select v-model="formUser.role" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm transition-shadow focus:outline-none focus:border-gray-400 text-gray-900">
                 <option value="admin">Admin</option>
               </select>
             </div>
@@ -195,7 +187,7 @@
                 Kata Sandi 
                 <span v-if="isEditing" class="text-xs font-normal text-gray-400">(Kosongkan jika tidak diubah)</span>
               </label>
-              <input type="password" v-model="formUser.password" :required="!isEditing" placeholder="••••••••" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-shadow">
+              <input type="password" v-model="formUser.password" :required="!isEditing" placeholder="••••••••" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm transition-shadow focus:outline-none focus:border-gray-400 text-gray-900">
             </div>
 
             <div class="mt-6 flex justify-end space-x-3 pt-2">
