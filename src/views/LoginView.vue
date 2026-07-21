@@ -1,11 +1,6 @@
 <template>
   <div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
-      <div class="flex justify-center text-emerald-700">
-        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-        </svg>
-      </div>
       <h2 class="mt-4 text-center text-3xl font-extrabold text-gray-900">
         Panel Admin
       </h2>
@@ -106,6 +101,8 @@
 import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const router = useRouter();
 const isLoading = ref(false);
 
@@ -115,15 +112,46 @@ const loginForm = reactive({
   rememberMe: false
 });
 
-const handleLogin = () => {
+const handleLogin = async () => {
   isLoading.value = true;
   
-  setTimeout(() => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: loginForm.email,
+        password: loginForm.password
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      const isAktif = data.user.is_aktif === 1 || data.user.is_aktif === true;
+
+      if (!isAktif) {
+        alert('Akses Ditolak: Akun Anda telah dinonaktifkan oleh Super Admin. Silakan hubungi pengelola.');
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        return;
+      }
+
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      
+      alert('Login Berhasil! Selamat datang ' + data.user.nama);
+      router.push('/admin'); 
+    } else {
+      alert(data.message);
+    }
+  } catch (error) {
+    console.error('Error saat login:', error);
+    alert('Terjadi kesalahan pada jaringan/server.');
+  } finally {
     isLoading.value = false;
-    
-    console.log('Data Login:', loginForm);
-    
-    alert(`Simulasi Login Berhasil!\nEmail: ${loginForm.email}`);
-  }, 1500);
+  }
 };
 </script>

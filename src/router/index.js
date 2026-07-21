@@ -12,6 +12,9 @@ import AdminPenggunaView from '../views/AdminPenggunaView.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    // ==========================================
+    // HALAMAN PUBLIK (Tidak butuh login)
+    // ==========================================
     {
       path: '/',
       name: 'home',
@@ -25,39 +28,73 @@ const router = createRouter({
     {
       path: '/login',
       name: 'admin-login',
-      component: LoginView
+      component: LoginView,
+      meta: { requiresGuest: true } // Menandakan halaman ini khusus untuk yang belum login
     },
+
+    // ==========================================
+    // HALAMAN ADMIN (Wajib login)
+    // ==========================================
     {
       path: '/admin',
       name: 'admin',
-      component: AdminView
+      component: AdminView,
+      meta: { requiresAuth: true }
     },
     {
       path: '/admin/konten',
       name: 'admin-konten',
-      component: AdminView
+      component: AdminView,
+      meta: { requiresAuth: true }
     },
     {
       path: '/admin/laporan', 
       name: 'admin-laporan',
-      component: AdminLaporanView
+      component: AdminLaporanView,
+      meta: { requiresAuth: true }
     },
     {
       path: '/admin/wisata', 
       name: 'admin-wisata',
-      component: AdminWisataView
+      component: AdminWisataView,
+      meta: { requiresAuth: true }
     },
     {
       path: '/admin/umkm', 
       name: 'admin-umkm',
-      component: AdminUmkmView
+      component: AdminUmkmView,
+      meta: { requiresAuth: true }
     },
     {
       path: '/admin/pengguna', 
       name: 'admin-pengguna',
-      component: AdminPenggunaView
+      component: AdminPenggunaView,
+      meta: { requiresAuth: true }
     }
   ]
 })
+
+// ==========================================
+// NAVIGATION GUARD (Satpam Halaman)
+// ==========================================
+router.beforeEach((to, from, next) => {
+  // Mengecek apakah token ada di localStorage
+  const isAuthenticated = localStorage.getItem('token') !== null;
+
+  // 1. Jika rute membutuhkan login dan user belum login
+  if (to.meta.requiresAuth && !isAuthenticated) {
+    // Alihkan paksa ke halaman login
+    next({ name: 'admin-login' });
+  } 
+  // 2. Jika user sudah login tapi mencoba mengakses halaman login lagi
+  else if (to.meta.requiresGuest && isAuthenticated) {
+    // Alihkan kembali ke dashboard admin
+    next({ name: 'admin' });
+  } 
+  // 3. Jika aman, izinkan masuk ke halaman tujuan
+  else {
+    next();
+  }
+});
 
 export default router
