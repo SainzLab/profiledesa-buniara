@@ -1,5 +1,5 @@
 <template>
-  <section id="beranda" class="relative h-screen flex items-center justify-center text-center overflow-hidden">
+  <section id="beranda" class="relative h-screen flex items-center justify-center text-center overflow-hidden bg-slate-900">
     
     <div class="absolute inset-0 z-0 brightness-50">
       <img 
@@ -8,33 +8,50 @@
         alt="Hero Background" 
         class="w-full h-full object-cover animate-ken-burns" 
       />
-      <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-[#0a3622]/80"></div>
+      <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-[#0a3622]/90"></div>
     </div>
 
-    <div v-if="!isLoading" class="relative z-10 max-w-5xl px-4 flex flex-col items-center">
+    <Transition name="fade" mode="out-in">
       
-      <h1 class="fade-in-up animation-delay-100 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-[1.1] mb-6 drop-shadow-lg">
-        {{ heroData.title }} 
+      <div v-if="!isLoading" key="content" class="relative z-10 max-w-5xl px-4 flex flex-col items-center">
         
-        <template v-if="heroData.highlight">
-          <br class="hidden sm:block" />
-          <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-200 to-white">
-            {{ heroData.highlight }}
-          </span>
-        </template>
-      </h1>
-      
-      <p class="fade-in-up animation-delay-200 text-base sm:text-lg md:text-xl text-gray-200 mb-10 max-w-2xl font-light drop-shadow-md whitespace-pre-wrap">
-        {{ heroData.subtitle }}
-      </p>
+        <h1 class="fade-in-up animation-delay-100 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-[1.1] mb-6 drop-shadow-lg">
+          {{ heroData.title }} 
+          
+          <template v-if="heroData.highlight">
+            <br class="hidden sm:block" />
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-200 via-emerald-300 to-white">
+              {{ heroData.highlight }}
+            </span>
+          </template>
+        </h1>
+        
+        <p class="fade-in-up animation-delay-200 text-base sm:text-lg md:text-xl text-gray-200 mb-10 max-w-2xl font-light drop-shadow-md whitespace-pre-wrap">
+          {{ heroData.subtitle }}
+        </p>
 
-    </div>
+      </div>
 
-    <div v-else class="relative z-10 max-w-5xl px-4 flex flex-col items-center">
-      <p class="text-white text-lg animate-pulse">Memuat data...</p>
-    </div>
+      <div v-else key="loading" class="relative z-10 flex flex-col items-center justify-center gap-4">
+        
+        <div class="relative w-14 h-14 flex items-center justify-center">
+          <div class="absolute inset-0 rounded-full border-2 border-teal-500/20"></div>
+          <div class="w-14 h-14 rounded-full border-2 border-teal-300 border-t-transparent animate-spin"></div>
+          <div class="w-2.5 h-2.5 bg-emerald-400 rounded-full animate-ping"></div>
+        </div>
 
-    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 fade-in-up animation-delay-500 cursor-pointer flex flex-col items-center gap-2 opacity-70 hover:opacity-100 transition-opacity" @click.prevent="scrollToWisata">
+        <p class="text-teal-100 text-xs sm:text-sm font-medium tracking-[0.25em] uppercase animate-pulse">
+          Memuat Konten...
+        </p>
+        
+      </div>
+
+    </Transition>
+
+    <div 
+      class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 fade-in-up animation-delay-500 cursor-pointer flex flex-col items-center gap-2 opacity-70 hover:opacity-100 transition-opacity" 
+      @click.prevent="scrollToWisata"
+    >
       <span class="text-white text-xs tracking-widest uppercase">Scroll</span>
       <div class="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center p-1">
         <div class="w-1.5 h-2 bg-white rounded-full animate-bounce"></div>
@@ -118,6 +135,17 @@ const scrollToWisata = () => {
 </script>
 
 <style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: scale(0.98);
+}
+
 .animate-ken-burns {
   animation: kenBurns 20s ease-out forwards;
 }
