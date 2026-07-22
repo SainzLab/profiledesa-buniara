@@ -27,7 +27,7 @@
         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
           <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
         </div>
-        <input type="text" v-model="searchQuery" placeholder="Cari nama produk atau usaha..." class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:outline-none focus:border-gray-400 text-gray-900">
+        <input type="text" v-model="searchQuery" placeholder="Cari nama produk atau usaha..." class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-gray-400 text-gray-900">
       </div>
     </div>
 
@@ -198,20 +198,19 @@
 <script setup>
 import { ref, reactive, onMounted, computed } from 'vue';
 
-const API_BASE_URL = 'http://localhost:3000';
-const API_URL = `${API_BASE_URL}/api/umkm`;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_URL = `${API_BASE_URL}/umkm`;
 
+const IMAGE_BASE_URL = API_BASE_URL.replace(/\/api$/, '');
 const daftarUmkm = ref([]);
 const isLoading = ref(false);
 const showModal = ref(false);
 const isEdit = ref(false);
 const isSubmitting = ref(false);
 const searchQuery = ref('');
-
 const showDeleteModal = ref(false);
 const isDeleting = ref(false);
 const itemToDelete = ref(null);
-
 const fileUpload = ref(null);
 
 const notif = reactive({
@@ -255,7 +254,7 @@ const getAuthHeaders = (isFormData = false) => {
 const getImageUrl = (imagePath) => {
   if (!imagePath) return '';
   if (imagePath.startsWith('blob:') || imagePath.startsWith('data:image')) return imagePath;
-  if (imagePath.startsWith('/uploads')) return `${API_BASE_URL}${imagePath}`;
+  if (imagePath.startsWith('/uploads')) return `${IMAGE_BASE_URL}${imagePath}`;
   return imagePath;
 };
 
@@ -382,7 +381,7 @@ const bukaModalEdit = (item) => {
   form.value = { ...item };
   
   if (form.value.image && form.value.image.startsWith('/uploads')) {
-    form.value.image = `${API_BASE_URL}${form.value.image}`;
+    form.value.image = `${IMAGE_BASE_URL}${form.value.image}`;
   }
   
   fileUpload.value = null;

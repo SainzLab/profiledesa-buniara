@@ -3,9 +3,6 @@
     <div class="max-w-7xl mx-auto z-10 relative">
       
       <div id="wisata" class="text-center mb-16 px-4 fade-in-up">
-        <span class="inline-block px-4 py-1.5 mb-4 rounded-full bg-teal-50 border border-teal-100 text-[#005a66] text-xs font-bold tracking-widest shadow-sm">
-          EXPLORE
-        </span>
         <h2 class="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#005a66] to-teal-400 mb-4">
           Destinasi Unggulan
         </h2>

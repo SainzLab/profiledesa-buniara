@@ -281,10 +281,12 @@
 <script setup>
 import { ref, reactive } from 'vue'
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const isDropdownOpen = ref(false)
 const isSubmitting = ref(false)
 const fileName = ref('')
 const showConfirmModal = ref(false)
+const fileUpload = ref(null)
 
 const notif = reactive({
   show: false,
@@ -306,8 +308,7 @@ const form = ref({
   kontak: '',
   kategori: '',
   subjek: '',
-  pesan: '',
-  lampiran: ''
+  pesan: ''
 })
 
 const categories = [
@@ -327,7 +328,7 @@ const handleFileUpload = (event) => {
   const file = event.target.files[0]
   if (!file) {
     fileName.value = ''
-    form.value.lampiran = ''
+    fileUpload.value = null
     return
   }
 
@@ -339,12 +340,8 @@ const handleFileUpload = (event) => {
   }
 
   fileName.value = file.name
-
-  const reader = new FileReader()
-  reader.onload = (e) => {
-    form.value.lampiran = e.target.result
-  }
-  reader.readAsDataURL(file)
+  
+  fileUpload.value = file
 }
 
 const bukaModalKonfirmasi = () => {
@@ -362,12 +359,20 @@ const tutupModalKonfirmasi = () => {
 const submitLaporan = async () => {
   isSubmitting.value = true
   try {
-    const response = await fetch('http://localhost:3000/api/public/laporan', {
+    const formData = new FormData();
+    formData.append('nama_lengkap', form.value.nama_lengkap);
+    formData.append('kontak', form.value.kontak);
+    formData.append('kategori', form.value.kategori);
+    formData.append('subjek', form.value.subjek);
+    formData.append('pesan', form.value.pesan);
+    
+    if (fileUpload.value) {
+      formData.append('lampiran', fileUpload.value);
+    }
+
+    const response = await fetch(`${API_BASE_URL}/public/laporan`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(form.value)
+      body: formData
     })
     
     const result = await response.json()
@@ -389,10 +394,10 @@ const submitLaporan = async () => {
         kontak: '',
         kategori: '',
         subjek: '',
-        pesan: '',
-        lampiran: ''
+        pesan: ''
       }
       fileName.value = ''
+      fileUpload.value = null
     } else {
       showNotification('Gagal mengirim laporan: ' + result.message, 'error')
       tutupModalKonfirmasi()

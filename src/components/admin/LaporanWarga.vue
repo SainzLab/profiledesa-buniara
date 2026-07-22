@@ -60,7 +60,7 @@
         </button>
 
         <div class="relative">
-          <input type="text" placeholder="Cari laporan..." class="pl-10 pr-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm w-full sm:w-auto outline-none transition-all">
+          <input type="text" placeholder="Cari laporan..." class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-gray-400 text-gray-900">
           <svg class="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
         </div>
       </div>
@@ -74,7 +74,7 @@
           @click="activeTab = tab"
           :class="[
             activeTab === tab 
-              ? 'border-emerald-500 text-emerald-600 font-bold' 
+              ? 'font-bold' 
               : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-medium',
             'whitespace-nowrap pb-3 px-1 border-b-2 text-sm transition-colors outline-none'
           ]"
@@ -202,18 +202,19 @@
             <p class="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">{{ selectedLaporan.pesan }}</p>
           </div>
 
-          <div v-if="selectedLaporan.lampiran" class="mb-8">
-            <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-3">Lampiran Foto</p>
-            <div class="p-2 border border-gray-100 rounded-2xl inline-block bg-white shadow-sm">
-              <img :src="selectedLaporan.lampiran" alt="Lampiran Laporan" class="max-w-full h-auto rounded-xl max-h-72 object-contain">
-            </div>
+          <div v-if="selectedLaporan?.lampiran" class="mt-4">
+            <p class="text-sm font-semibold text-gray-700 mb-2">Lampiran Foto</p>
+            <img 
+              :src="getImageUrl(selectedLaporan.lampiran)" 
+              alt="Lampiran Laporan" 
+              class="w-full max-w-md rounded-lg shadow-md"
+            />
           </div>
-
           <div class="border-t border-gray-100 pt-8 mt-4">
             <label class="block text-sm font-extrabold text-gray-800 mb-3">Tindak Lanjut Status</label>
             <div class="flex flex-col sm:flex-row gap-3">
               <div class="relative flex-1">
-                <select v-model="editStatus" class="w-full appearance-none border border-gray-200 rounded-xl pl-4 pr-10 py-3.5 text-sm font-medium focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none bg-slate-50 hover:bg-white transition-colors cursor-pointer text-gray-700">
+                <select v-model="editStatus" class="w-full appearance-none border border-gray-200 rounded-xl pl-4 pr-10 py-3.5 text-sm font-medium outline-none bg-slate-50 hover:bg-white transition-colors cursor-pointer text-gray-700 focus:border-gray-400">
                   <option value="Menunggu">Menunggu (Baru Masuk)</option>
                   <option value="Diproses">Sedang Diproses</option>
                   <option value="Selesai">Selesai / Tuntas</option>
@@ -265,6 +266,9 @@
 
 <script setup>
 import { ref, reactive, onMounted, computed } from 'vue';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const ASSET_BASE_URL = API_BASE_URL ? API_BASE_URL.replace(/\/api$/, '') : '';
 
 const notif = reactive({
   show: false,
@@ -332,7 +336,6 @@ const editStatus = ref('');
 const isWaModalOpen = ref(false);
 const formWaNumber = ref('');
 
-const API_URL = 'http://localhost:3000/api';
 const getToken = () => localStorage.getItem('token') || '';
 
 const formatDate = (dateString) => {
@@ -341,10 +344,17 @@ const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('id-ID', options);
 };
 
+const getImageUrl = (imagePath) => {
+  if (!imagePath) return '';
+  if (imagePath.startsWith('blob:') || imagePath.startsWith('data:image')) return imagePath;
+  if (imagePath.startsWith('/uploads')) return `${ASSET_BASE_URL}${imagePath}`;
+  return imagePath;
+};
+
 const fetchLaporan = async () => {
   isLoading.value = true;
   try {
-    const res = await fetch(`${API_URL}/laporan`, {
+    const res = await fetch(`${API_BASE_URL}/laporan`, {
       headers: { 'Authorization': `Bearer ${getToken()}` }
     });
     const result = await res.json();
@@ -371,7 +381,7 @@ const promptUpdateStatus = () => {
     'primary',
     async () => {
       try {
-        const res = await fetch(`${API_URL}/laporan/${selectedLaporan.value.id}/status`, {
+        const res = await fetch(`${API_BASE_URL}/laporan/${selectedLaporan.value.id}/status`, {
           method: 'PATCH',
           headers: { 
             'Content-Type': 'application/json',
@@ -407,7 +417,7 @@ const promptHapusLaporan = (id) => {
     'danger',
     async () => {
       try {
-        const res = await fetch(`${API_URL}/laporan/${id}`, {
+        const res = await fetch(`${API_BASE_URL}/laporan/${id}`, {
           method: 'DELETE',
           headers: { 
             'Authorization': `Bearer ${getToken()}` 
@@ -437,7 +447,7 @@ const promptSaveWaNumber = () => {
     'primary',
     async () => {
       try {
-        const res = await fetch(`${API_URL}/pengaturan/wa`, {
+        const res = await fetch(`${API_BASE_URL}/pengaturan/wa`, {
           method: 'PUT',
           headers: { 
             'Content-Type': 'application/json',
@@ -463,7 +473,7 @@ const promptSaveWaNumber = () => {
 
 const fetchWaNumber = async () => {
   try {
-    const res = await fetch(`${API_URL}/pengaturan/wa`, {
+    const res = await fetch(`${API_BASE_URL}/pengaturan/wa`, {
       headers: { 'Authorization': `Bearer ${getToken()}` }
     });
     const result = await res.json();

@@ -72,16 +72,16 @@
         </div>
 
         <div class="mb-6">
-          <label class="block text-sm font-semibold text-gray-700 mb-2">Gambar Latar Belakang (Hero)</label>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">Gambar Latar Belakang (Disarankan 16:9)</label>
           <input type="file" accept="image/*" @change="handleFileUpload($event, 'hero_image')" 
                  class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 mb-2" />
           
-          <div class="relative w-full max-w-md aspect-[4/3] bg-gray-50 rounded-lg border-2 border-gray-300 border-dashed overflow-hidden flex items-center justify-center">
+          <div class="relative w-full max-w-md aspect-[16/9] bg-gray-50 rounded-lg border-2 border-gray-300 border-dashed overflow-hidden flex items-center justify-center">
             <img v-if="preview.hero_image || form.hero_image" 
                  :src="preview.hero_image || form.hero_image" 
                  class="w-full h-full object-cover" 
                  alt="Preview Hero" />
-            <span v-else class="text-sm font-medium text-gray-500">Preview 4:3</span>
+            <span v-else class="text-sm font-medium text-gray-500">Preview 16:9</span>
           </div>
         </div>
       </div>
@@ -113,7 +113,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Gambar 1 (Sawah)</label>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Gambar 1 (Disarankan 4:3)</label>
             <input type="file" accept="image/*" @change="handleFileUpload($event, 'tentang_img1')" 
                    class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 mb-2" />
             
@@ -127,7 +127,7 @@
           </div>
 
           <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Gambar 2 (Mata Air)</label>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Gambar 2 (Disarankan 4:3)</label>
             <input type="file" accept="image/*" @change="handleFileUpload($event, 'tentang_img2')" 
                    class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 mb-2" />
             
@@ -180,7 +180,7 @@
           </div>
 
           <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Foto Kantor Desa</label>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Foto Kantor Desa (Disarankan 16:9)</label>
             <input type="file" accept="image/*" @change="handleFileUpload($event, 'kantor_img')" 
                    class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 mb-2" />
             
@@ -343,7 +343,6 @@ const fetchKonten = async () => {
         }
       }
 
-      // Set preview dari path database agar admin bisa melihat gambar lama
       if (result.data.hero_image) preview.value.hero_image = `${ASSET_BASE_URL}${result.data.hero_image}`;
       if (result.data.tentang_img1) preview.value.tentang_img1 = `${ASSET_BASE_URL}${result.data.tentang_img1}`;
       if (result.data.tentang_img2) preview.value.tentang_img2 = `${ASSET_BASE_URL}${result.data.tentang_img2}`;
