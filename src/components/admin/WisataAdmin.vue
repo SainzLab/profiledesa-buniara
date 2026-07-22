@@ -47,7 +47,7 @@
       <div v-for="item in daftarWisata" :key="item.id" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col hover:shadow-md transition-all h-full group">
         
         <div class="relative w-full pt-[75%] bg-gray-100 flex-shrink-0 overflow-hidden">
-          <img :src="item.image" :alt="item.judul" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+          <img :src="getImageUrl(item.image)" :alt="item.judul" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
           <div class="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-bold text-[#0f644e] shadow-sm">
             {{ item.kategori }}
           </div>
@@ -171,12 +171,16 @@ import { ref, reactive, onMounted } from 'vue';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+const ASSET_BASE_URL = API_BASE_URL ? API_BASE_URL.replace(/\/api$/, '') : '';
+
 const daftarWisata = ref([]);
 const isLoading = ref(false);
 const showModal = ref(false);
 const isEditing = ref(false);
 const isSubmitting = ref(false);
 const imagePreview = ref('');
+
+const fileUpload = ref(null);
 
 const showDeleteModal = ref(false);
 const isDeleting = ref(false);
@@ -206,6 +210,13 @@ const formWisata = reactive({
   isPublished: true
 });
 
+const getImageUrl = (imagePath) => {
+  if (!imagePath) return '';
+  if (imagePath.startsWith('blob:') || imagePath.startsWith('data:image')) return imagePath;
+  if (imagePath.startsWith('/uploads')) return `${ASSET_BASE_URL}${imagePath}`;
+  return imagePath;
+};
+
 const resetForm = () => {
   formWisata.id = null;
   formWisata.judul = '';
@@ -214,6 +225,7 @@ const resetForm = () => {
   formWisata.image = '';
   formWisata.isPublished = true;
   imagePreview.value = '';
+  fileUpload.value = null;
 };
 
 const bukaModalTambah = () => {
@@ -227,9 +239,11 @@ const bukaModalEdit = (item) => {
   formWisata.judul = item.judul;
   formWisata.kategori = item.kategori;
   formWisata.deskripsi = item.deskripsi;
-  formWisata.image = ''; 
+  formWisata.image = item.image;
   formWisata.isPublished = item.isPublished;
-  imagePreview.value = item.image; 
+
+  imagePreview.value = getImageUrl(item.image); 
+  fileUpload.value = null;
   
   isEditing.value = true;
   showModal.value = true;
@@ -242,6 +256,7 @@ const tutupModal = () => {
 const hapusPreview = () => {
   imagePreview.value = '';
   formWisata.image = '';
+  fileUpload.value = null;
 };
 
 const handleFileUpload = (event) => {
@@ -254,12 +269,9 @@ const handleFileUpload = (event) => {
     return;
   }
 
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    imagePreview.value = e.target.result;
-    formWisata.image = e.target.result;
-  };
-  reader.readAsDataURL(file);
+  fileUpload.value = file;
+
+  imagePreview.value = URL.createObjectURL(file);
 };
 
 const bukaModalHapus = (item) => {
@@ -313,19 +325,32 @@ const simpanWisata = async () => {
       
     const method = isEditing.value ? 'PUT' : 'POST';
 
-    if (!isEditing.value && !formWisata.image) {
+    if (!isEditing.value && !fileUpload.value) {
       showNotification("Gambar wajib diunggah untuk wisata baru!", "error");
       isSubmitting.value = false;
       return;
     }
 
+    const formData = new FormData();
+    formData.append('judul', formWisata.judul);
+    formData.append('kategori', formWisata.kategori);
+    formData.append('deskripsi', formWisata.deskripsi);
+    formData.append('isPublished', formWisata.isPublished);
+
+    if (isEditing.value) {
+      formData.append('image', formWisata.image);
+    }
+
+    if (fileUpload.value) {
+      formData.append('image', fileUpload.value);
+    }
+
     const response = await fetch(url, {
       method: method,
       headers: { 
-        'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      body: JSON.stringify(formWisata)
+      body: formData
     });
 
     const result = await response.json();

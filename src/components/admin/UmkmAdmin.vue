@@ -47,11 +47,18 @@
       <div v-for="item in filteredUmkm" :key="item.id" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col hover:shadow-md transition-all h-full group">
         
         <div class="relative w-full pt-[75%] bg-gray-100 flex-shrink-0 overflow-hidden">
-          <img v-if="item.image" :src="item.image" :alt="item.judul" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-          <div v-else class="absolute inset-0 flex items-center justify-center text-gray-400 font-medium">No Image</div>
-          <div class="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-bold text-[#0f644e] shadow-sm">
-            {{ item.kategori }}
-          </div>
+            <img 
+                v-if="item.image" 
+                :src="getImageUrl(item.image)" 
+                :alt="item.judul" 
+                class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+            />
+            <div v-else class="absolute inset-0 flex items-center justify-center text-gray-400 font-medium">
+                No Image
+            </div>
+            <div class="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-bold text-[#0f644e] shadow-sm">
+                {{ item.kategori }}
+            </div>
         </div>
 
         <div class="p-5 flex flex-col flex-grow">
@@ -191,6 +198,9 @@
 <script setup>
 import { ref, reactive, onMounted, computed } from 'vue';
 
+const API_BASE_URL = 'http://localhost:3000';
+const API_URL = `${API_BASE_URL}/api/umkm`;
+
 const daftarUmkm = ref([]);
 const isLoading = ref(false);
 const showModal = ref(false);
@@ -201,6 +211,8 @@ const searchQuery = ref('');
 const showDeleteModal = ref(false);
 const isDeleting = ref(false);
 const itemToDelete = ref(null);
+
+const fileUpload = ref(null);
 
 const notif = reactive({
   show: false,
@@ -227,13 +239,24 @@ const form = ref({
   is_published: false
 });
 
-const API_URL = 'http://localhost:3000/api/umkm';
-const getAuthHeaders = () => {
+const getAuthHeaders = (isFormData = false) => {
   const token = localStorage.getItem('token');
-  return {
-    'Content-Type': 'application/json',
+  const headers = {
     'Authorization': `Bearer ${token}`
   };
+  
+  if (!isFormData) {
+    headers['Content-Type'] = 'application/json';
+  }
+  
+  return headers;
+};
+
+const getImageUrl = (imagePath) => {
+  if (!imagePath) return '';
+  if (imagePath.startsWith('blob:') || imagePath.startsWith('data:image')) return imagePath;
+  if (imagePath.startsWith('/uploads')) return `${API_BASE_URL}${imagePath}`;
+  return imagePath;
 };
 
 const filteredUmkm = computed(() => {
@@ -268,6 +291,7 @@ const fetchUmkm = async () => {
 
 const hapusPreview = () => {
   form.value.image = '';
+  fileUpload.value = null;
 };
 
 const handleFileUpload = (event) => {
@@ -281,11 +305,9 @@ const handleFileUpload = (event) => {
     return;
   }
 
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    form.value.image = e.target.result;
-  };
-  reader.readAsDataURL(file);
+  fileUpload.value = file;
+  
+  form.value.image = URL.createObjectURL(file);
 };
 
 const simpanUmkm = async () => {
@@ -294,10 +316,21 @@ const simpanUmkm = async () => {
     const url = isEdit.value ? `${API_URL}/${form.value.id}` : API_URL;
     const method = isEdit.value ? 'PUT' : 'POST';
 
+    const formData = new FormData();
+    formData.append('judul', form.value.judul);
+    formData.append('pemilik', form.value.pemilik);
+    formData.append('kategori', form.value.kategori);
+    formData.append('deskripsi', form.value.deskripsi);
+    formData.append('is_published', form.value.is_published);
+    
+    if (fileUpload.value) {
+      formData.append('image', fileUpload.value);
+    }
+
     const response = await fetch(url, {
       method: method,
-      headers: getAuthHeaders(),
-      body: JSON.stringify(form.value)
+      headers: getAuthHeaders(true),
+      body: formData
     });
 
     const result = await response.json();
@@ -340,12 +373,19 @@ const toggleStatus = async (item) => {
 const bukaModalTambah = () => {
   isEdit.value = false;
   form.value = { id: null, judul: '', pemilik: '', kategori: '', deskripsi: '', image: '', is_published: false };
+  fileUpload.value = null; 
   showModal.value = true;
 };
 
 const bukaModalEdit = (item) => {
   isEdit.value = true;
   form.value = { ...item };
+  
+  if (form.value.image && form.value.image.startsWith('/uploads')) {
+    form.value.image = `${API_BASE_URL}${form.value.image}`;
+  }
+  
+  fileUpload.value = null;
   showModal.value = true;
 };
 

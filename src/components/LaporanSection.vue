@@ -67,7 +67,7 @@
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
-        
+
         <div class="lg:col-span-7 bg-white p-6 sm:p-10 rounded-[2rem] shadow-lg border border-gray-50 transition-all duration-500 hover:shadow-xl fade-in-left animation-delay-200">
           <div class="flex items-center gap-4 mb-8">
             <div class="bg-teal-50 p-3 rounded-2xl text-[#0a3622] shadow-inner">

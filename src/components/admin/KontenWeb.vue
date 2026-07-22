@@ -260,6 +260,8 @@ import { ref, onMounted } from 'vue';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+const ASSET_BASE_URL = API_BASE_URL ? API_BASE_URL.replace(/\/api$/, '') : '';
+
 const isLoading = ref(false); 
 const isFetching = ref(true); 
 
@@ -291,6 +293,13 @@ const preview = ref({
   kantor_img: ''
 });
 
+const fileUploads = ref({
+  hero_image: null,
+  tentang_img1: null,
+  tentang_img2: null,
+  kantor_img: null
+});
+
 const form = ref({
   hero_headline: '',
   hero_subheadline: '',
@@ -316,11 +325,7 @@ const handleFileUpload = (event, fieldName) => {
 
   preview.value[fieldName] = URL.createObjectURL(file);
 
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    form.value[fieldName] = e.target.result;
-  };
-  reader.readAsDataURL(file);
+  fileUploads.value[fieldName] = file;
 };
 
 const fetchKonten = async () => {
@@ -337,6 +342,12 @@ const fetchKonten = async () => {
             : (Array.isArray(form.value[key]) ? [] : '');
         }
       }
+
+      // Set preview dari path database agar admin bisa melihat gambar lama
+      if (result.data.hero_image) preview.value.hero_image = `${ASSET_BASE_URL}${result.data.hero_image}`;
+      if (result.data.tentang_img1) preview.value.tentang_img1 = `${ASSET_BASE_URL}${result.data.tentang_img1}`;
+      if (result.data.tentang_img2) preview.value.tentang_img2 = `${ASSET_BASE_URL}${result.data.tentang_img2}`;
+      if (result.data.kantor_img) preview.value.kantor_img = `${ASSET_BASE_URL}${result.data.kantor_img}`;
     }
   } catch (error) {
     console.error('Gagal mengambil data:', error);
@@ -351,18 +362,34 @@ const simpanPerubahan = async () => {
   try {
     const token = localStorage.getItem('token');
     
+    const formData = new FormData();
+    
+    for (const key in form.value) {
+      if (Array.isArray(form.value[key])) {
+        formData.append(key, JSON.stringify(form.value[key]));
+      } else {
+        formData.append(key, form.value[key]);
+      }
+    }
+
+    if (fileUploads.value.hero_image) formData.append('hero_image', fileUploads.value.hero_image);
+    if (fileUploads.value.tentang_img1) formData.append('tentang_img1', fileUploads.value.tentang_img1);
+    if (fileUploads.value.tentang_img2) formData.append('tentang_img2', fileUploads.value.tentang_img2);
+    if (fileUploads.value.kantor_img) formData.append('kantor_img', fileUploads.value.kantor_img);
+
     const response = await fetch(`${API_BASE_URL}/konten`, {
       method: 'PUT',
       headers: {
-        'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      body: JSON.stringify(form.value)
+      body: formData 
     });
 
     const result = await response.json();
     if (result.success) {
       showNotif('success', 'Berhasil Disimpan!', 'Perubahan konten website telah berhasil diperbarui.');
+      await fetchKonten();
+      fileUploads.value = { hero_image: null, tentang_img1: null, tentang_img2: null, kantor_img: null };
     } else {
       showNotif('error', 'Gagal Menyimpan', result.message || 'Terjadi kesalahan saat menyimpan data.');
     }
