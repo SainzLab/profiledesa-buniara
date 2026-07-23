@@ -1,4 +1,3 @@
 -Icon Medsos blm link
--Footer Meneu Pengajuan dan laporan masih route Issue
 -Tambah fitur pengajuan lain-lain
 -Frontend dan backend data Email
