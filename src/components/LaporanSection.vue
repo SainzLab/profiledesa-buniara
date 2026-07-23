@@ -193,25 +193,27 @@
                 </div>
                 <div class="pt-1">
                   <h4 class="text-sm font-bold text-gray-800">Alamat Kantor Desa</h4>
-                  <p class="text-sm text-gray-500 mt-1 leading-relaxed">Jl. Raya Buniara No. 12, Kec. Tanjungsiang, Subang.</p>
+                  <p class="text-sm text-gray-500 mt-1 leading-relaxed">{{ kontenInfo.alamat }}</p>
                 </div>
               </li>
+              
               <li class="flex items-start gap-4 p-3 rounded-2xl hover:bg-slate-50 transition-colors group cursor-default border border-transparent hover:border-gray-100">
                 <div class="bg-white shadow-sm border border-gray-50 p-3 rounded-2xl text-[#0a3622] group-hover:bg-[#0a3622] group-hover:text-white transition-colors duration-300 shrink-0">
                   <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" /><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" /></svg>
                 </div>
                 <div class="pt-1">
                   <h4 class="text-sm font-bold text-gray-800">Email Resmi</h4>
-                  <p class="text-sm text-gray-500 mt-1">info@buniara-desa.id</p>
+                  <p class="text-sm text-gray-500 mt-1">{{ kontenInfo.email }}</p>
                 </div>
               </li>
+              
               <li class="flex items-start gap-4 p-3 rounded-2xl hover:bg-slate-50 transition-colors group cursor-default border border-transparent hover:border-gray-100">
                 <div class="bg-white shadow-sm border border-gray-50 p-3 rounded-2xl text-[#0a3622] group-hover:bg-[#0a3622] group-hover:text-white transition-colors duration-300 shrink-0">
                   <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd" /></svg>
                 </div>
                 <div class="pt-1">
                   <h4 class="text-sm font-bold text-gray-800">WhatsApp Pelayanan</h4>
-                  <p class="text-sm text-gray-500 mt-1">+62 812 3456 7890</p>
+                  <p class="text-sm text-gray-500 mt-1">{{ kontenInfo.kontak }}</p>
                 </div>
               </li>
             </ul>
@@ -256,21 +258,42 @@
             </div>
           </div>
 
-          <div class="bg-gradient-to-br from-[#0a3622] to-teal-800 rounded-[2rem] shadow-xl p-8 text-white relative overflow-hidden group hover:scale-[1.02] transition-transform duration-300">
-            <div class="absolute -top-10 -right-10 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl group-hover:opacity-20 transition-opacity"></div>
-      
-            <div class="flex flex-col sm:flex-row justify-center items-center text-center relative z-10 gap-8 sm:gap-0">
-              <div class="flex flex-col items-center w-full sm:w-1/2 sm:border-r border-white/20">
-                <p class="text-4xl font-extrabold mb-1 tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white to-teal-200">124</p>
-                <p class="text-[10px] font-bold text-teal-100 uppercase tracking-widest mt-1">Laporan Selesai</p>
-              </div>
-              <div class="flex flex-col items-center w-full sm:w-1/2">
-                <p class="text-4xl font-extrabold mb-1 tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white to-teal-200">24</p>
-                <p class="text-[10px] font-bold text-teal-100 uppercase tracking-widest mt-1">Laporan Diproses</p>
+            <div class="bg-gradient-to-br from-[#0a3622] to-teal-800 rounded-[2rem] shadow-xl p-8 text-white relative overflow-hidden group hover:scale-[1.02] transition-transform duration-300">
+              <div class="absolute -top-10 -right-10 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl group-hover:opacity-20 transition-opacity"></div>
+
+              <div class="flex flex-wrap sm:flex-nowrap justify-center items-center text-center relative z-10 gap-y-8 sm:gap-y-0">
+                
+                <div class="flex flex-col items-center w-1/2 sm:w-1/4 sm:border-r border-white/20">
+                  <p class="text-4xl font-extrabold mb-1 tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white to-teal-200">
+                    {{ stats.total }}
+                  </p>
+                  <p class="text-[10px] font-bold text-teal-100 uppercase tracking-widest mt-1">Total</p>
+                </div>
+
+                <div class="flex flex-col items-center w-1/2 sm:w-1/4 sm:border-r border-white/20">
+                  <p class="text-4xl font-extrabold mb-1 tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white to-teal-200">
+                    {{ stats.menunggu }}
+                  </p>
+                  <p class="text-[10px] font-bold text-teal-100 uppercase tracking-widest mt-1">Menunggu</p>
+                </div>
+                
+                <div class="flex flex-col items-center w-1/2 sm:w-1/4 sm:border-r border-white/20">
+                  <p class="text-4xl font-extrabold mb-1 tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white to-teal-200">
+                    {{ stats.diproses }}
+                  </p>
+                  <p class="text-[10px] font-bold text-teal-100 uppercase tracking-widest mt-1">Diproses</p>
+                </div>
+                
+                <div class="flex flex-col items-center w-1/2 sm:w-1/4">
+                  <p class="text-4xl font-extrabold mb-1 tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white to-teal-200">
+                    {{ stats.selesai }}
+                  </p>
+                  <p class="text-[10px] font-bold text-teal-100 uppercase tracking-widest mt-1">Selesai</p>
+                </div>
+
               </div>
             </div>
-          </div>
-
+         
         </div>
       </div>
 
@@ -279,7 +302,7 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const isDropdownOpen = ref(false)
@@ -302,6 +325,62 @@ const showNotification = (message, type = 'success') => {
     notif.show = false
   }, 3500)
 }
+
+const stats = ref({
+  total: 0,
+  menunggu: 0,
+  diproses: 0,
+  selesai: 0
+});
+
+const kontenInfo = ref({
+  alamat: 'Memuat alamat...',
+  email: 'info@buniara-desa.id',
+  kontak: 'Memuat kontak...'
+});
+
+const fetchKonten = async () => {
+  try {
+    const response = await fetch('http://localhost:3000/api/konten');
+    const result = await response.json();
+    
+    if (result.success && result.data) {
+      kontenInfo.value.alamat = result.data.alamat || kontenInfo.value.alamat;
+      kontenInfo.value.kontak = result.data.kontak || kontenInfo.value.kontak;
+      
+      if (result.data.email) {
+        kontenInfo.value.email = result.data.email;
+      }
+    }
+  } catch (error) {
+    console.error('Gagal memuat data konten website:', error);
+  }
+};
+
+onMounted(() => {
+  fetchStats();
+  fetchKonten();
+});
+
+const fetchStats = async () => {
+  try {
+    const response = await fetch('http://localhost:3000/api/public/laporan/stats');
+    const result = await response.json();
+    
+    if (result.success) {
+      stats.value.total = result.data.total;
+      stats.value.menunggu = result.data.menunggu;
+      stats.value.diproses = result.data.diproses;
+      stats.value.selesai = result.data.selesai;
+    }
+  } catch (error) {
+    console.error('Gagal memuat statistik laporan:', error);
+  }
+};
+
+onMounted(() => {
+  fetchStats();
+});
 
 const form = ref({
   nama_lengkap: '',
@@ -340,7 +419,6 @@ const handleFileUpload = (event) => {
   }
 
   fileName.value = file.name
-  
   fileUpload.value = file
 }
 

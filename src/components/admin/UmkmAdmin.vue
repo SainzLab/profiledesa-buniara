@@ -53,9 +53,9 @@
                 :alt="item.judul" 
                 class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
             />
-            <div v-else class="absolute inset-0 flex items-center justify-center text-gray-400 font-medium">
-                No Image
-            </div>
+             <div v-else class="absolute inset-0 flex flex-col items-center justify-center text-gray-400 bg-gray-100 group-hover:bg-gray-200 transition-colors">   
+                <span class="text-sm font-semibold opacity-70">No Image</span>
+             </div>
             <div class="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-bold text-[#0f644e] shadow-sm">
                 {{ item.kategori }}
             </div>

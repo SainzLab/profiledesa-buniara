@@ -75,7 +75,7 @@ const router = createRouter({
 })
 
 // ==========================================
-// NAVIGATION GUARD (Satpam Halaman)
+// NAVIGATION GUARD
 // ==========================================
 router.beforeEach((to, from, next) => {
   const isAuthenticated = localStorage.getItem('token') !== null;

@@ -127,6 +127,23 @@ const menuItems = [
 
 const handleScroll = () => {
   isScrolled.value = window.scrollY > 50;
+
+  const scrollPosition = window.scrollY;
+  const threshold = window.innerHeight / 3;
+
+  for (let i = menuItems.length - 1; i >= 0; i--) {
+    const item = menuItems[i];
+    const element = document.getElementById(item.id);
+    
+    if (element) {
+      const rect = element.getBoundingClientRect();
+      
+      if (rect.top <= threshold) {
+        activeSection.value = item.id;
+        break;
+      }
+    }
+  }
 };
 
 const toggleSidebar = () => {
@@ -154,31 +171,14 @@ const scrollToSection = (id) => {
   }
 };
 
-let observer;
-
 onMounted(() => {
   window.addEventListener('scroll', handleScroll);
-
-  observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        activeSection.value = entry.target.id;
-      }
-    });
-  }, {
-    rootMargin: '-100px 0px -60% 0px' 
-  });
-
-  menuItems.forEach(item => {
-    const el = document.getElementById(item.id);
-    if (el) observer.observe(el);
-  });
+  handleScroll(); 
 });
 
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll);
   document.body.style.overflow = ''; 
-  if (observer) observer.disconnect();
 });
 </script>
 

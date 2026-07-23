@@ -15,35 +15,20 @@
         <div class="md:col-span-4">
           <h4 class="text-sm font-bold text-teal-200 uppercase tracking-widest mb-6">Navigasi</h4>
           
-          <ul class="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-4 text-emerald-100/80 text-sm">
-            <li>
-              <a href="#" @click.prevent="scrollToSection('beranda')" class="inline-block hover:text-white hover:translate-x-1 transition-all duration-300">
-                &rarr; Beranda
-              </a>
-            </li>
-            <li>
-              <a href="#" @click.prevent="scrollToSection('wisata')" class="inline-block hover:text-white hover:translate-x-1 transition-all duration-300">
-                &rarr; Wisata
-              </a>
-            </li>
-            <li>
-              <a href="#" @click.prevent="scrollToSection('tentang-kami')" class="inline-block hover:text-white hover:translate-x-1 transition-all duration-300">
-                &rarr; Tentang Kami
-              </a>
-            </li>
-            <li>
-              <a href="#" @click.prevent="scrollToSection('umkm')" class="inline-block hover:text-white hover:translate-x-1 transition-all duration-300">
-                &rarr; UMKM
-              </a>
-            </li>
-            <li>
-              <a href="#" @click.prevent="scrollToSection('wilayah')" class="inline-block hover:text-white hover:translate-x-1 transition-all duration-300">
-                &rarr; Wilayah
-              </a>
-            </li>
+          <ul class="grid grid-cols-1 sm:grid-cols-1 gap-y-3 gap-x-4 text-emerald-100/80 text-sm">
             <li>
               <a href="/login" class="inline-block hover:text-white hover:translate-x-1 transition-all duration-300">
                 &rarr; Panel Admin 
+              </a>
+            </li>
+            <li>
+              <a href="/" class="inline-block hover:text-white hover:translate-x-1 transition-all duration-300">
+                &rarr; Beranda 
+              </a>
+            </li>
+            <li>
+              <a href="/laporan" class="inline-block hover:text-white hover:translate-x-1 transition-all duration-300">
+                &rarr; Laporan & Pengajuan
               </a>
             </li>
           </ul>
