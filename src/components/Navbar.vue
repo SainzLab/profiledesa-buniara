@@ -36,7 +36,7 @@
       </li>
       <li>
         <a href="/laporan" class="inline-block bg-[#0a3622] hover:bg-emerald-800 text-white px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 shadow-md hover:shadow-[0_4px_15px_rgba(10,54,34,0.4)] hover:-translate-y-0.5">
-          Laporan & Masukan
+          Laporan & Pengajuan
         </a>
       </li>
     </ul>

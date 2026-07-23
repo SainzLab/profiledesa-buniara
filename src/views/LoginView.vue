@@ -1,7 +1,6 @@
 <template>
   <div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative">
     
-    <!-- ==================== POP-UP NOTIFIKASI (TOAST) ==================== -->
     <Transition
       enter-active-class="transform transition duration-300 ease-out"
       enter-from-class="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
@@ -57,8 +56,7 @@
         </button>
       </div>
     </Transition>
-    <!-- ================================================================== -->
-
+   
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
       <h2 class="mt-4 text-center text-3xl font-extrabold text-gray-900">
         Panel Admin

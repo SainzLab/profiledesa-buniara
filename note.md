@@ -1,0 +1,3 @@
+-Icon Medsos blm link
+-Footer Meneu Pengajuan dan laporan masih route Issue
+-Tambah fitur pengajuan lain-lain

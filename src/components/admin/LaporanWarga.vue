@@ -249,7 +249,7 @@
           </div>
           
           <label class="block text-sm font-extrabold text-gray-800 mb-2">Nomor WhatsApp Aktif</label>
-          <input v-model="formWaNumber" type="text" placeholder="628123456789" class="w-full border border-gray-200 rounded-xl px-4 py-3.5 focus:bg-white focus:ring-2 focus:ring-emerald-500 outline-none text-sm mb-8 bg-slate-50 font-medium text-gray-800">
+          <input v-model="formWaNumber" type="text" placeholder="628123456789" class="w-full border border-gray-200 rounded-xl px-4 py-3.5 focus:bg-white outline-none text-sm mb-8 bg-slate-50 font-medium focus:border-gray-400  text-gray-800">
           
           <div class="flex flex-col sm:flex-row justify-end gap-3">
             <button @click="isWaModalOpen = false" class="w-full sm:w-auto px-5 py-3.5 border border-gray-200 text-gray-600 bg-white hover:bg-slate-50 rounded-xl text-sm font-bold transition-colors">Batal</button>
