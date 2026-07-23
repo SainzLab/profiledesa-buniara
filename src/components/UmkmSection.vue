@@ -12,7 +12,7 @@
         </p>
       </div>
       
-      <div class="relative group">
+      <div class="relative group" v-if="!isLoading">
 
         <button 
           @click="scrollLeft" 
@@ -25,67 +25,37 @@
 
         <div ref="sliderRef" class="flex overflow-x-auto gap-4 md:gap-6 snap-x snap-mandatory scroll-smooth hide-scrollbar pb-10 pt-4 px-4 md:px-2">
           
-          <div class="shrink-0 w-[85%] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] snap-center bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl border border-gray-100 transition-all duration-500 hover:-translate-y-2 group cursor-pointer animate-stagger-1">
+          <div 
+            v-for="(item, index) in umkmList" 
+            :key="item.id"
+            class="shrink-0 w-[85%] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] snap-center bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl border border-gray-100 transition-all duration-500 hover:-translate-y-2 group cursor-pointer"
+            :class="`animate-stagger-${(index % 5) + 1}`"
+          >
             <div class="overflow-hidden relative aspect-[4/3] w-full">
-              <img src="https://dummyimage.com/600x400/a3a3a3/ffffff&text=Kerajinan+Bambu" alt="Kerajinan Bambu" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <img 
+                :src="getImageUrl(item.image, item.judul)" 
+                :alt="item.judul" 
+                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+              />
               <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              
+              <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-[#005a66] text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
+                {{ item.kategori }}
+              </div>
             </div>
+            
             <div class="p-6 md:p-8 relative bg-white">
-              <h3 class="font-extrabold text-xl text-gray-800 group-hover:text-[#005a66] transition-colors mb-2">Kerajinan Bambu</h3>
-              <p class="text-sm text-gray-500 leading-relaxed">
-                Anyaman bambu tradisional berkualitas tinggi hasil karya pengrajin lokal.
-              </p>
-            </div>
-          </div>
-
-          <div class="shrink-0 w-[85%] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] snap-center bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl border border-gray-100 transition-all duration-500 hover:-translate-y-2 group cursor-pointer animate-stagger-2">
-            <div class="overflow-hidden relative aspect-[4/3] w-full">
-              <img src="https://dummyimage.com/600x400/a3a3a3/ffffff&text=Kopi+Gunung+Canggah" alt="Kopi Gunung Canggah" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-              <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            </div>
-            <div class="p-6 md:p-8 relative bg-white">
-              <h3 class="font-extrabold text-xl text-gray-800 group-hover:text-[#005a66] transition-colors mb-2">Kopi Gunung Canggah</h3>
-              <p class="text-sm text-gray-500 leading-relaxed">
-                Kopi robusta pilihan dengan aroma khas dari lereng Gunung Canggah.
-              </p>
-            </div>
-          </div>
-
-          <div class="shrink-0 w-[85%] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] snap-center bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl border border-gray-100 transition-all duration-500 hover:-translate-y-2 group cursor-pointer animate-stagger-3">
-            <div class="overflow-hidden relative aspect-[4/3] w-full">
-              <img src="https://dummyimage.com/600x400/a3a3a3/ffffff&text=Madu+Hutan+Alami" alt="Madu Hutan Alami" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-              <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            </div>
-            <div class="p-6 md:p-8 relative bg-white">
-              <h3 class="font-extrabold text-xl text-gray-800 group-hover:text-[#005a66] transition-colors mb-2">Madu Hutan Alami</h3>
-              <p class="text-sm text-gray-500 leading-relaxed">
-                Madu murni dari hutan lindung Buniara, kaya akan nutrisi dan manfaat.
-              </p>
-            </div>
-          </div>
-
-          <div class="shrink-0 w-[85%] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] snap-center bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl border border-gray-100 transition-all duration-500 hover:-translate-y-2 group cursor-pointer animate-stagger-4">
-            <div class="overflow-hidden relative aspect-[4/3] w-full">
-              <img src="https://dummyimage.com/600x400/a3a3a3/ffffff&text=Gula+Aren+Asli" alt="Gula Aren Asli" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-              <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            </div>
-            <div class="p-6 md:p-8 relative bg-white">
-              <h3 class="font-extrabold text-xl text-gray-800 group-hover:text-[#005a66] transition-colors mb-2">Gula Aren Asli</h3>
-              <p class="text-sm text-gray-500 leading-relaxed">
-                Gula aren murni hasil sadapan petani lokal dengan rasa manis alami.
-              </p>
-            </div>
-          </div>
-
-          <div class="shrink-0 w-[85%] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] snap-center bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl border border-gray-100 transition-all duration-500 hover:-translate-y-2 group cursor-pointer animate-stagger-5">
-            <div class="overflow-hidden relative aspect-[4/3] w-full">
-              <img src="https://dummyimage.com/600x400/a3a3a3/ffffff&text=Keripik+Pisang" alt="Keripik Pisang" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-              <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            </div>
-            <div class="p-6 md:p-8 relative bg-white">
-              <h3 class="font-extrabold text-xl text-gray-800 group-hover:text-[#005a66] transition-colors mb-2">Keripik Pisang</h3>
-              <p class="text-sm text-gray-500 leading-relaxed">
-                Camilan renyah khas pedesaan yang diolah dari pisang pilihan.
+              <h3 class="font-extrabold text-xl text-gray-800 group-hover:text-[#005a66] transition-colors mb-1">{{ item.judul }}</h3>
+              
+              <div class="flex items-center gap-2 mb-3 text-teal-600">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+                <span class="text-xs font-semibold uppercase tracking-wider">{{ item.pemilik }}</span>
+              </div>
+              
+              <p class="text-sm text-gray-500 leading-relaxed line-clamp-3">
+                {{ item.deskripsi }}
               </p>
             </div>
           </div>
@@ -107,9 +77,40 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 
 const sliderRef = ref(null);
+const isLoading = ref(true);
+const umkmList = ref([]);
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const ASSET_BASE_URL = API_BASE_URL ? API_BASE_URL.replace(/\/api$/, '') : '';
+
+const getImageUrl = (imagePath, fallbackText) => {
+  if (!imagePath) return `https://dummyimage.com/600x400/a3a3a3/ffffff&text=${fallbackText.replace(/ /g, '+')}`;
+  if (imagePath.startsWith('http') || imagePath.startsWith('data:image')) return imagePath;
+  if (imagePath.startsWith('/uploads')) return `${ASSET_BASE_URL}${imagePath}`;
+  return imagePath;
+};
+
+const fetchUMKM = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/public/umkm`);
+    const result = await response.json();
+    
+    if (result.success && result.data) {
+      umkmList.value = result.data;
+    }
+  } catch (error) {
+    console.error('Gagal mengambil data UMKM:', error);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+onMounted(() => {
+  fetchUMKM();
+});
 
 const scrollLeft = () => {
   if (sliderRef.value) {

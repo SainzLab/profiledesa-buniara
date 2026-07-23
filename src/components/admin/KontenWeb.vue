@@ -88,14 +88,6 @@
 
       <div class="bg-white border border-gray-200 rounded-xl p-8 mb-8 shadow-sm">
         <h3 class="text-lg font-bold text-gray-900 mb-6 border-b border-gray-100 pb-3"> Tentang Kami</h3>
-        
-        <div class="mb-6">
-          <label class="block text-sm font-semibold text-gray-700 mb-2">Judul Bagian</label>
-          <input type="text" 
-                 v-model="form.tentang_judul"
-                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-400 text-gray-900" 
-                 placeholder="Surga Tersembunyi di Subang" />
-        </div>
 
         <div class="mb-6">
           <label class="block text-sm font-semibold text-gray-700 mb-2">Deskripsi Paragraf 1</label>
