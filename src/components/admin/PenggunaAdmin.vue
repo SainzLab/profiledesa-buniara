@@ -18,25 +18,21 @@
           'border-blue-200 bg-blue-50/30': notif.type === 'info'
         }"
       >
-
         <div v-if="notif.type === 'success'" class="p-2 bg-emerald-100 rounded-xl text-emerald-600 shrink-0">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
           </svg>
         </div>
-
         <div v-else-if="notif.type === 'error'" class="p-2 bg-red-100 rounded-xl text-red-600 shrink-0">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </div>
-
         <div v-else class="p-2 bg-blue-100 rounded-xl text-blue-600 shrink-0">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </div>
-
         <div class="flex-1 pt-0.5">
           <h4 class="text-sm font-bold" :class="{
             'text-emerald-900': notif.type === 'success',
@@ -49,7 +45,6 @@
             {{ notif.message }}
           </p>
         </div>
-
         <button 
           @click="notif.show = false" 
           class="text-gray-400 hover:text-gray-600 p-1 rounded-lg transition-colors"
@@ -202,6 +197,32 @@
       </div>
     </Transition>
 
+    <Transition name="modal">
+      <div v-if="confirmModal.show" class="fixed inset-0 z-[150] flex items-center justify-center p-4">
+        
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" @click="closeConfirmModal"></div>
+        
+        <div class="modal-box relative bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl">
+          <div class="flex flex-col items-center text-center">
+            <div class="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center mb-4">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+            </div>
+            <h3 class="text-lg font-bold text-gray-900 mb-2">{{ confirmModal.title }}</h3>
+            <p class="text-sm text-gray-500 mb-6">{{ confirmModal.message }}</p>
+            <div class="flex gap-3 w-full">
+              <button @click="closeConfirmModal" class="flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-semibold rounded-xl transition-colors">
+                Batal
+              </button>
+              <button @click="executeConfirm" class="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-xl transition-colors shadow-md shadow-red-600/20">
+                Ya, Hapus
+              </button>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </Transition>
+
   </div>
 </template>
 
@@ -224,6 +245,24 @@ const showNotif = (type, title, message, duration = 4000) => {
   if (duration > 0) {
     notifTimeout = setTimeout(() => { notif.value.show = false; }, duration);
   }
+};
+
+const confirmModal = ref({
+  show: false,
+  title: '',
+  message: '',
+  action: null
+});
+
+const closeConfirmModal = () => {
+  confirmModal.value.show = false;
+};
+
+const executeConfirm = async () => {
+  if (confirmModal.value.action) {
+    await confirmModal.value.action();
+  }
+  closeConfirmModal();
 };
 
 const daftarPengguna = ref([]);
@@ -361,32 +400,57 @@ const toggleStatus = async (user) => {
   }
 };
 
-const hapusPengguna = async (id, nama) => {
-  if (confirm(`Apakah Anda yakin ingin menghapus pengguna "${nama}" secara permanen?`)) {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${API_BASE_URL}/pengguna/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
+const hapusPengguna = (id, nama) => {
+  confirmModal.value = {
+    show: true,
+    title: 'Hapus Pengguna',
+    message: `Apakah Anda yakin ingin menghapus pengguna "${nama}" secara permanen? Tindakan ini tidak dapat dibatalkan.`,
+    action: async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_BASE_URL}/pengguna/${id}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        const result = await response.json();
+        
+        if (result.success) {
+          showNotif('success', 'Berhasil Dihapus', `Pengguna ${nama} telah dihapus dari sistem.`);
+          daftarPengguna.value = daftarPengguna.value.filter(u => u.id !== id);
+        } else {
+          showNotif('error', 'Gagal Menghapus', result.message);
         }
-      });
-      const result = await response.json();
-      
-      if (result.success) {
-        showNotif('success', 'Berhasil Dihapus', `Pengguna ${nama} telah dihapus dari sistem.`);
-        daftarPengguna.value = daftarPengguna.value.filter(u => u.id !== id);
-      } else {
-        showNotif('error', 'Gagal Menghapus', result.message);
+      } catch (error) {
+        console.error("Gagal menghapus:", error);
+        showNotif('error', 'Kesalahan Server', 'Terjadi masalah teknis saat mencoba menghapus data.');
       }
-    } catch (error) {
-      console.error("Gagal menghapus:", error);
-      showNotif('error', 'Kesalahan Server', 'Terjadi masalah teknis saat mencoba menghapus data.');
     }
-  }
+  };
 };
 
 onMounted(() => {
   fetchPengguna();
 });
 </script>
+
+<style scoped>
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.3s ease;
+}
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+
+.modal-enter-active .modal-box,
+.modal-leave-active .modal-box {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.modal-enter-from .modal-box,
+.modal-leave-to .modal-box {
+  transform: scale(0.95) translateY(10px);
+}
+</style>

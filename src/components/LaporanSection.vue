@@ -341,7 +341,7 @@ const kontenInfo = ref({
 
 const fetchKonten = async () => {
   try {
-    const response = await fetch('http://localhost:3000/api/konten');
+    const response = await fetch(`${API_BASE_URL}/konten`);
     const result = await response.json();
     
     if (result.success && result.data) {
@@ -357,14 +357,9 @@ const fetchKonten = async () => {
   }
 };
 
-onMounted(() => {
-  fetchStats();
-  fetchKonten();
-});
-
 const fetchStats = async () => {
   try {
-    const response = await fetch('http://localhost:3000/api/public/laporan/stats');
+    const response = await fetch(`${API_BASE_URL}/public/laporan/stats`);
     const result = await response.json();
     
     if (result.success) {
@@ -380,6 +375,7 @@ const fetchStats = async () => {
 
 onMounted(() => {
   fetchStats();
+  fetchKonten();
 });
 
 const form = ref({
