@@ -64,6 +64,8 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const heroData = ref({
   title: '', 
   highlight: '', 
@@ -78,7 +80,7 @@ const fetchHeroKonten = async () => {
   console.log("[DEBUG] Mulai mengambil data dari API...");
 
   try {
-    const response = await fetch('http://localhost:3000/api/konten');
+    const response = await fetch(`${API_BASE_URL}/konten`);
     
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -99,7 +101,8 @@ const fetchHeroKonten = async () => {
       }
       if (data.hero_image) {
         if (data.hero_image.startsWith('/uploads')) {
-          heroData.value.image = `http://localhost:3000${data.hero_image}`;
+          const rootUrl = API_BASE_URL.replace('/api', '');
+          heroData.value.image = `${rootUrl}${data.hero_image}`;
         } else {
           heroData.value.image = data.hero_image;
         }
@@ -109,7 +112,7 @@ const fetchHeroKonten = async () => {
       console.warn("[DEBUG] API merespons, tapi success: false", result);
     }
   } catch (error) {
-    console.error('[DEBUG] GAGAL FETCH API! Alasan:', error.message);
+    console.error('[DEBUG] GAGAL FETCH API :', error.message);
     
     heroData.value.title = 'Harmoni Alam, Pertanian,';
     heroData.value.highlight = 'dan Pariwisata Buniara';
@@ -122,16 +125,6 @@ const fetchHeroKonten = async () => {
 onMounted(() => {
   fetchHeroKonten();
 });
-
-const scrollToWisata = () => {
-  const element = document.getElementById('wisata');
-  if (element) {
-    const navHeight = 80;
-    const elementPosition = element.getBoundingClientRect().top;
-    const offsetPosition = elementPosition + window.scrollY - navHeight;
-    window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
-  }
-};
 </script>
 
 <style scoped>

@@ -1,3 +1,1 @@
--Icon Medsos blm link
 -Tambah fitur pengajuan lain-lain
--Frontend dan backend data Email
