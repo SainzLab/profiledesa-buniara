@@ -50,6 +50,9 @@
                 <div class="p-6 relative bg-white">
                   <h3 class="font-extrabold text-xl text-gray-800 group-hover:text-[#005a66] transition-colors mb-2">{{ item.judul }}</h3>
                   <p class="text-sm text-gray-500 leading-relaxed line-clamp-3">{{ item.deskripsi }}</p>
+                  <router-link :to="`/wisata/${item.id}`" class="...kelas-tombol-tailwind...">
+                    Lihat Detail
+                  </router-link>
                 </div>
               </div>
               

@@ -31,6 +31,11 @@ const router = createRouter({
       component: LoginView,
       meta: { requiresGuest: true } 
     },
+    {
+      path: '/wisata/:id',
+      name: 'DetailWisata',
+      component: () => import('../views/DetailWisata.vue') 
+    },
 
     // ==========================================
     // HALAMAN ADMIN (Wajib login)
