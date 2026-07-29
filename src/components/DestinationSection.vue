@@ -29,12 +29,14 @@
 
             <div ref="sliderRef" class="flex overflow-x-auto gap-4 md:gap-6 snap-x snap-mandatory scroll-smooth hide-scrollbar pb-10 pt-4 px-4 md:px-2">
               
-              <div 
+              <router-link 
                 v-for="(item, index) in wisataList" 
                 :key="item.id"
-                class="shrink-0 w-[85%] sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)] snap-center bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl border border-gray-100 transition-all duration-500 hover:-translate-y-2 group cursor-pointer"
+                :to="`/wisata/${item.id}`"
+                class="block shrink-0 w-[85%] sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)] snap-center bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl border border-gray-100 transition-all duration-500 hover:-translate-y-2 group cursor-pointer focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
                 :class="`animate-stagger-${(index % 5) + 1}`"
               >
+              
                 <div class="overflow-hidden relative aspect-[4/3] w-full">
                   <img 
                     :src="getImageUrl(item.image, item.judul)" 
@@ -47,14 +49,13 @@
                     {{ item.kategori }}
                   </div>
                 </div>
+                
+                <!-- Content Wrapper -->
                 <div class="p-6 relative bg-white">
                   <h3 class="font-extrabold text-xl text-gray-800 group-hover:text-[#005a66] transition-colors mb-2">{{ item.judul }}</h3>
                   <p class="text-sm text-gray-500 leading-relaxed line-clamp-3">{{ item.deskripsi }}</p>
-                  <router-link :to="`/wisata/${item.id}`" class="...kelas-tombol-tailwind...">
-                    Lihat Detail
-                  </router-link>
                 </div>
-              </div>
+              </router-link>
               
             </div>
 

@@ -14,7 +14,7 @@
     <div class="flex justify-between items-center mb-8">
       <div>
         <h2 class="text-2xl font-bold text-gray-900">Manajemen Wisata</h2>
-        <p class="text-sm text-gray-500 mt-1">Kelola destinasi wisata Desa Buniara.</p>
+        <p class="text-sm text-gray-500 mt-1">Kelola destinasi wisata dan detail halamannya.</p>
       </div>
       <button @click="bukaModalTambah" class="bg-[#0f644e] hover:bg-[#0a4d3c] text-white px-5 py-2.5 rounded-full text-sm font-semibold flex items-center transition-all shadow-sm hover:shadow">
         <svg class="w-5 h-5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
@@ -27,7 +27,7 @@
         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
           <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
         </div>
-        <input type="text" placeholder="Cari nama wisata" class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:outline-none focus:border-gray-400 text-gray-900">
+        <input type="text" placeholder="Cari nama wisata" class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-gray-400 text-gray-900">
       </div>
     </div>
 
@@ -47,13 +47,10 @@
       <div v-for="item in daftarWisata" :key="item.id" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col hover:shadow-md transition-all h-full group">
         
         <div class="relative w-full pt-[75%] bg-gray-100 flex-shrink-0 overflow-hidden">
-          
           <img v-if="getImageUrl(item.image)" :src="getImageUrl(item.image)" :alt="item.judul" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-          
           <div v-else class="absolute inset-0 flex flex-col items-center justify-center text-gray-400 bg-gray-100 group-hover:bg-gray-200 transition-colors">   
             <span class="text-sm font-semibold opacity-70">No Image</span>
           </div>
-
           <div class="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-bold text-[#0f644e] shadow-sm">
             {{ item.kategori }}
           </div>
@@ -62,7 +59,6 @@
         <div class="p-5 flex flex-col flex-grow">
           <div class="flex justify-between items-start mb-3 gap-2">
             <h3 class="text-lg font-bold text-gray-900 leading-tight line-clamp-2 flex-grow">{{ item.judul }}</h3>
-            
             <div class="flex flex-col items-center flex-shrink-0">
               <label class="relative inline-flex items-center cursor-pointer">
                 <input type="checkbox" v-model="item.isPublished" @change="toggleStatus(item)" class="sr-only peer">
@@ -89,7 +85,7 @@
     </div>
 
     <div v-if="showModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-opacity">
-      <div class="bg-white rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl max-h-[90vh] flex flex-col transform transition-all">
+      <div class="bg-white rounded-2xl w-full max-w-4xl overflow-hidden shadow-2xl max-h-[90vh] flex flex-col transform transition-all">
         <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
           <h3 class="text-xl font-bold text-gray-900">{{ isEditing ? 'Edit Konten Wisata' : 'Tambah Konten Wisata Baru' }}</h3>
           <button @click="tutupModal" class="text-gray-400 hover:text-gray-600 bg-white rounded-full p-1 hover:bg-gray-100 transition-colors">
@@ -98,40 +94,100 @@
         </div>
         
         <div class="overflow-y-auto p-6">
-          <form @submit.prevent="simpanWisata" class="space-y-5">
-            <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-1.5">Judul Wisata</label>
-              <input type="text" v-model="formWisata.judul" required class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm transition-all focus:outline-none focus:outline-none focus:border-gray-400 text-gray-900">
-            </div>
+          <form @submit.prevent="simpanWisata" class="space-y-8">
             
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kategori</label>
-              <select v-model="formWisata.kategori" required class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm transition-all focus:outline-none focus:outline-none focus:border-gray-400 text-gray-900">
-                <option value="" disabled>Pilih Kategori</option>
-                <option value="Wisata Alam">Wisata Alam</option>
-                <option value="Wisata Buatan">Wisata Buatan</option>
-                <option value="Wisata Budaya">Wisata Budaya</option>
-              </select>
-            </div>
+              <h4 class="text-base font-bold text-gray-900 border-b pb-2 mb-4">Informasi Dasar</h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                  <label class="block text-sm font-semibold text-gray-700 mb-1.5">Judul Wisata <span class="text-red-500">*</span></label>
+                  <input type="text" v-model="formWisata.judul" required class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm transition-all focus:outline-none focus:border-gray-400 text-gray-900">
+                </div>
+                <div>
+                  <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kategori <span class="text-red-500">*</span></label>
+                  <select v-model="formWisata.kategori" required class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm transition-all focus:outline-none focus:border-gray-400 text-gray-900">
+                    <option value="" disabled>Pilih Kategori</option>
+                    <option value="Wisata Alam">Wisata Alam</option>
+                    <option value="Wisata Buatan">Wisata Buatan</option>
+                    <option value="Wisata Budaya">Wisata Budaya</option>
+                  </select>
+                </div>
+                
+                <div class="md:col-span-2">
+                  <label class="block text-sm font-semibold text-gray-700 mb-1.5">Deskripsi Singkat (Hero Banner) <span class="text-red-500">*</span></label>
+                  <textarea v-model="formWisata.deskripsi" required rows="2" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm transition-all focus:outline-none focus:border-gray-400 text-gray-900"></textarea>
+                  <p class="text-xs text-gray-500 mt-1">Teks pendek yang muncul di bawah judul pada gambar banner atas.</p>
+                </div>
 
-            <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-1.5">Deskripsi Lengkap</label>
-              <textarea v-model="formWisata.deskripsi" required rows="4" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm transition-all focus:outline-none focus:outline-none focus:border-gray-400 text-gray-900"></textarea>
-            </div>
+                <div class="md:col-span-2">
+                  <label class="block text-sm font-semibold text-gray-700 mb-1.5">Tentang Wisata (Penjelasan Detail)</label>
+                  <textarea v-model="formWisata.tentang" rows="6" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm transition-all focus:outline-none focus:border-gray-400 text-gray-900"></textarea>
+                  <p class="text-xs text-gray-500 mt-1">Gunakan tombol 'Enter' untuk memisahkan paragraf. Ini adalah isi lengkap cerita wisata Anda.</p>
+                </div>
 
-            <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-1.5">Gambar Banner (Disarankan Rasio 4:3)</label>
-              <div v-if="imagePreview" class="mb-4 relative w-full pt-[50%] sm:pt-[40%] bg-gray-100 rounded-xl overflow-hidden border border-gray-200 group">
-                <img :src="imagePreview" class="absolute inset-0 w-full h-full object-cover" />
-                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <button type="button" @click="hapusPreview" class="bg-red-500 text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-red-600 shadow-sm flex items-center">
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                    Hapus Foto
-                  </button>
+                <div class="md:col-span-2">
+                  <label class="block text-sm font-semibold text-gray-700 mb-1.5">URL Google Maps (Opsional)</label>
+                  <input type="text" v-model="formWisata.peta_url" placeholder="Paste link / iframe embed Google Maps di sini" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm transition-all focus:outline-none focus:border-gray-400 text-gray-900">
                 </div>
               </div>
-              <input type="file" @change="handleFileUpload" accept="image/jpeg, image/png, image/webp" class="w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-[#0f644e] hover:file:bg-emerald-100 border border-gray-300 rounded-xl p-1.5 transition-all focus:outline-none focus:ring-2 focus:ring-[#0f644e]/20">
-              <p class="text-xs text-gray-500 mt-2">Maksimal 40MB. Format: JPG, PNG, WEBP.</p>
+            </div>
+
+            <div>
+              <div class="flex justify-between items-center border-b pb-2 mb-4">
+                <h4 class="text-base font-bold text-gray-900">Fasilitas Wisata</h4>
+                <button type="button" @click="tambahFasilitas" class="text-xs font-semibold bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-lg hover:bg-emerald-100 transition-colors">
+                  + Tambah Fasilitas
+                </button>
+              </div>
+              
+              <div v-if="formWisata.fasilitas.length === 0" class="text-center py-4 bg-gray-50 rounded-xl text-sm text-gray-500">
+                Belum ada fasilitas yang ditambahkan.
+              </div>
+              
+              <div class="space-y-3">
+                <div v-for="(fas, index) in formWisata.fasilitas" :key="index" class="flex flex-col md:flex-row gap-3 items-start bg-gray-50 p-3 rounded-xl border border-gray-100">
+                  <div class="w-full md:w-1/3">
+                    <input type="text" v-model="fas.judul" placeholder="Contoh: Air Jernih" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none">
+                  </div>
+                  <div class="w-full md:w-full flex gap-3">
+                    <input type="text" v-model="fas.deskripsi" placeholder="Deskripsi singkat fasilitas" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none">
+                    <button type="button" @click="hapusFasilitas(index)" class="flex-shrink-0 text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h4 class="text-base font-bold text-gray-900 border-b pb-2 mb-4">Media & Galeri</h4>
+              
+              <div class="mb-6">
+                <label class="block text-sm font-semibold text-gray-700 mb-1.5">Gambar Banner Utama <span class="text-red-500">*</span></label>
+                <div v-if="previews.image" class="mb-3 relative w-full pt-[40%] md:pt-[25%] bg-gray-100 rounded-xl overflow-hidden border border-gray-200 group">
+                  <img :src="previews.image" class="absolute inset-0 w-full h-full object-cover" />
+                  <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <button type="button" @click="hapusPreview('image')" class="bg-red-500 text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-red-600 shadow-sm flex items-center">
+                      Hapus
+                    </button>
+                  </div>
+                </div>
+                <input type="file" @change="e => handleFileUpload(e, 'image')" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-[#0f644e] border border-gray-300 rounded-xl p-1.5 focus:outline-none">
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div v-for="i in 4" :key="`galeri_${i}`">
+                  <label class="block text-sm font-semibold text-gray-700 mb-1.5">Galeri {{ i }}</label>
+                  <div v-if="previews[`galeri_${i}`]" class="mb-2 relative w-full pt-[75%] bg-gray-100 rounded-xl overflow-hidden border border-gray-200 group">
+                    <img :src="previews[`galeri_${i}`]" class="absolute inset-0 w-full h-full object-cover" />
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <button type="button" @click="hapusPreview(`galeri_${i}`)" class="bg-red-500 text-white px-2 py-1 rounded-md text-xs hover:bg-red-600">Hapus</button>
+                    </div>
+                  </div>
+                  <input type="file" @change="e => handleFileUpload(e, `galeri_${i}`)" accept="image/*" class="w-full text-xs text-gray-500 border border-gray-300 rounded-lg p-1">
+                </div>
+              </div>
+
             </div>
 
             <div class="mt-8 flex justify-end space-x-3 pt-5 border-t border-gray-100">
@@ -151,12 +207,10 @@
         <div class="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4 border-8 border-red-50/50">
           <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
         </div>
-        
         <h3 class="text-xl font-bold text-gray-900 mb-2">Hapus Konten Wisata</h3>
         <p class="text-sm text-gray-500 mb-6">
-          Apakah Anda yakin ingin menghapus <span class="font-bold text-gray-900">"{{ itemToDelete?.judul }}"</span>? Tindakan ini tidak dapat dibatalkan.
+          Apakah Anda yakin ingin menghapus <span class="font-bold text-gray-900">"{{ itemToDelete?.judul }}"</span>?
         </p>
-        
         <div class="flex justify-center space-x-3">
           <button @click="tutupModalHapus" :disabled="isDeleting" class="flex-1 px-4 py-2.5 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors disabled:opacity-70">
             Batal
@@ -176,7 +230,6 @@
 import { ref, reactive, onMounted } from 'vue';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
 const ASSET_BASE_URL = API_BASE_URL ? API_BASE_URL.replace(/\/api$/, '') : '';
 
 const daftarWisata = ref([]);
@@ -184,9 +237,6 @@ const isLoading = ref(false);
 const showModal = ref(false);
 const isEditing = ref(false);
 const isSubmitting = ref(false);
-const imagePreview = ref('');
-
-const fileUpload = ref(null);
 
 const showDeleteModal = ref(false);
 const isDeleting = ref(false);
@@ -212,26 +262,56 @@ const formWisata = reactive({
   judul: '',
   kategori: '',
   deskripsi: '',
+  tentang: '',
+  peta_url: '',
+  fasilitas: [],
   image: '',
+  galeri_1: '',
+  galeri_2: '',
+  galeri_3: '',
+  galeri_4: '',
   isPublished: true
+});
+
+const filesToUpload = reactive({
+  image: null,
+  galeri_1: null,
+  galeri_2: null,
+  galeri_3: null,
+  galeri_4: null
+});
+
+const previews = reactive({
+  image: '',
+  galeri_1: '',
+  galeri_2: '',
+  galeri_3: '',
+  galeri_4: ''
 });
 
 const getImageUrl = (imagePath) => {
   if (!imagePath) return '';
-  if (imagePath.startsWith('blob:') || imagePath.startsWith('data:image')) return imagePath;
+  if (imagePath.startsWith('blob:') || imagePath.startsWith('data:image') || imagePath.startsWith('http')) return imagePath;
   if (imagePath.startsWith('/uploads')) return `${ASSET_BASE_URL}${imagePath}`;
   return imagePath;
 };
 
+const tambahFasilitas = () => {
+  formWisata.fasilitas.push({ judul: '', deskripsi: '' });
+};
+
+const hapusFasilitas = (index) => {
+  formWisata.fasilitas.splice(index, 1);
+};
+
 const resetForm = () => {
-  formWisata.id = null;
-  formWisata.judul = '';
-  formWisata.kategori = '';
-  formWisata.deskripsi = '';
-  formWisata.image = '';
-  formWisata.isPublished = true;
-  imagePreview.value = '';
-  fileUpload.value = null;
+  Object.assign(formWisata, {
+    id: null, judul: '', kategori: '', deskripsi: '', tentang: '', peta_url: '',
+    fasilitas: [], image: '', galeri_1: '', galeri_2: '', galeri_3: '', galeri_4: '', isPublished: true
+  });
+  
+  Object.keys(filesToUpload).forEach(k => filesToUpload[k] = null);
+  Object.keys(previews).forEach(k => previews[k] = '');
 };
 
 const bukaModalTambah = () => {
@@ -241,15 +321,26 @@ const bukaModalTambah = () => {
 };
 
 const bukaModalEdit = (item) => {
+  resetForm();
+  
   formWisata.id = item.id;
   formWisata.judul = item.judul;
   formWisata.kategori = item.kategori;
   formWisata.deskripsi = item.deskripsi;
-  formWisata.image = item.image;
+  formWisata.tentang = item.tentang || '';
+  formWisata.peta_url = item.peta_url || '';
   formWisata.isPublished = item.isPublished;
 
-  imagePreview.value = getImageUrl(item.image); 
-  fileUpload.value = null;
+  try {
+    formWisata.fasilitas = typeof item.fasilitas === 'string' ? JSON.parse(item.fasilitas) : (item.fasilitas || []);
+  } catch (e) {
+    formWisata.fasilitas = [];
+  }
+
+  ['image', 'galeri_1', 'galeri_2', 'galeri_3', 'galeri_4'].forEach(field => {
+    formWisata[field] = item[field] || '';
+    previews[field] = getImageUrl(item[field]);
+  });
   
   isEditing.value = true;
   showModal.value = true;
@@ -259,37 +350,24 @@ const tutupModal = () => {
   showModal.value = false;
 };
 
-const hapusPreview = () => {
-  imagePreview.value = '';
-  formWisata.image = '';
-  fileUpload.value = null;
+const hapusPreview = (fieldName) => {
+  previews[fieldName] = '';
+  formWisata[fieldName] = '';
+  filesToUpload[fieldName] = null;
 };
 
-const handleFileUpload = (event) => {
+const handleFileUpload = (event, fieldName) => {
   const file = event.target.files[0];
   if (!file) return;
 
-  if (file.size > 40 * 1024 * 1024) {
-    showNotification("Ukuran file maksimal adalah 40MB!", "error");
+  if (file.size > 10 * 1024 * 1024) { 
+    showNotification("Ukuran file maksimal adalah 10MB per gambar!", "error");
     event.target.value = '';
     return;
   }
 
-  fileUpload.value = file;
-
-  imagePreview.value = URL.createObjectURL(file);
-};
-
-const bukaModalHapus = (item) => {
-  itemToDelete.value = item;
-  showDeleteModal.value = true;
-};
-
-const tutupModalHapus = () => {
-  showDeleteModal.value = false;
-  setTimeout(() => {
-    itemToDelete.value = null;
-  }, 300);
+  filesToUpload[fieldName] = file;
+  previews[fieldName] = URL.createObjectURL(file);
 };
 
 const fetchWisata = async () => {
@@ -331,8 +409,8 @@ const simpanWisata = async () => {
       
     const method = isEditing.value ? 'PUT' : 'POST';
 
-    if (!isEditing.value && !fileUpload.value) {
-      showNotification("Gambar wajib diunggah untuk wisata baru!", "error");
+    if (!isEditing.value && !filesToUpload.image) {
+      showNotification("Gambar banner utama wajib diunggah!", "error");
       isSubmitting.value = false;
       return;
     }
@@ -341,15 +419,21 @@ const simpanWisata = async () => {
     formData.append('judul', formWisata.judul);
     formData.append('kategori', formWisata.kategori);
     formData.append('deskripsi', formWisata.deskripsi);
+    formData.append('tentang', formWisata.tentang);
     formData.append('isPublished', formWisata.isPublished);
+    formData.append('peta_url', formWisata.peta_url);
+    
+    formData.append('fasilitas', JSON.stringify(formWisata.fasilitas));
 
-    if (isEditing.value) {
-      formData.append('image', formWisata.image);
-    }
-
-    if (fileUpload.value) {
-      formData.append('image', fileUpload.value);
-    }
+    const imageFields = ['image', 'galeri_1', 'galeri_2', 'galeri_3', 'galeri_4'];
+    imageFields.forEach(field => {
+      if (isEditing.value && !filesToUpload[field]) {
+        formData.append(field, formWisata[field] || '');
+      }
+      if (filesToUpload[field]) {
+        formData.append(field, filesToUpload[field]);
+      }
+    });
 
     const response = await fetch(url, {
       method: method,
@@ -374,6 +458,18 @@ const simpanWisata = async () => {
   } finally {
     isSubmitting.value = false;
   }
+};
+
+const bukaModalHapus = (item) => {
+  itemToDelete.value = item;
+  showDeleteModal.value = true;
+};
+
+const tutupModalHapus = () => {
+  showDeleteModal.value = false;
+  setTimeout(() => {
+    itemToDelete.value = null;
+  }, 300);
 };
 
 const toggleStatus = async (item) => {
