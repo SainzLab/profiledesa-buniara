@@ -12,7 +12,11 @@
         </p>
       </div>
       
-      <div class="relative group" v-if="!isLoading">
+      <div v-if="isLoading" class="flex justify-center items-center py-20">
+        <div class="w-10 h-10 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+
+      <div class="relative group" v-else>
 
         <button 
           @click="scrollLeft" 
@@ -28,36 +32,57 @@
           <div 
             v-for="(item, index) in umkmList" 
             :key="item.id"
-            class="shrink-0 w-[85%] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] snap-center bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl border border-gray-100 transition-all duration-500 hover:-translate-y-2 group cursor-pointer"
+            @click="goToDetail(item.id)"
+            class="shrink-0 w-[85%] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] snap-center bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl border border-gray-100 transition-all duration-500 hover:-translate-y-2 group cursor-pointer flex flex-col justify-between"
             :class="`animate-stagger-${(index % 5) + 1}`"
           >
-            <div class="overflow-hidden relative aspect-[4/3] w-full">
-              <img 
-                :src="getImageUrl(item.image, item.judul)" 
-                :alt="item.judul" 
-                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
-              />
-              <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              
-              <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-[#005a66] text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
-                {{ item.kategori }}
-              </div>
-            </div>
-            
-            <div class="p-6 md:p-8 relative bg-white">
-              <h3 class="font-extrabold text-xl text-gray-800 group-hover:text-[#005a66] transition-colors mb-1">{{ item.judul }}</h3>
-              
-              <div class="flex items-center gap-2 mb-3 text-teal-600">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                </svg>
-                <span class="text-xs font-semibold uppercase tracking-wider">{{ item.pemilik }}</span>
+            <div>
+              <div class="overflow-hidden relative aspect-[4/3] w-full">
+                <img 
+                  :src="getImageUrl(item.image || item.gambar_hero, item.nama_umkm)" 
+                  :alt="item.nama_umkm" 
+                  class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                
+                <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-[#005a66] text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
+                  {{ item.kategori || 'UMKM' }}
+                </div>
               </div>
               
-              <p class="text-sm text-gray-500 leading-relaxed line-clamp-3">
-                {{ item.deskripsi }}
-              </p>
+              <!-- Konten Teks -->
+              <div class="p-6 md:p-8 relative bg-white pb-4">
+                <h3 class="font-extrabold text-xl text-gray-800 group-hover:text-[#005a66] transition-colors mb-1 line-clamp-1">
+                  {{ item.nama_umkm }}
+                </h3>
+                
+                <div class="flex items-center gap-2 mb-3 text-teal-600">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                  </svg>
+                  <span class="text-xs font-semibold uppercase tracking-wider line-clamp-1">{{ item.pemilik || 'Warga Buniara' }}</span>
+                </div>
+                
+                <p class="text-sm text-gray-500 leading-relaxed line-clamp-3">
+                  {{ item.deskripsi_singkat || item.deskripsi }}
+                </p>
+              </div>
             </div>
+
+            <div class="px-6 md:px-8 pb-6 pt-2 bg-white">
+              <div class="pt-4 border-t border-gray-100 flex items-center justify-between">
+                <span class="text-xs font-semibold text-gray-400 group-hover:text-gray-600 transition-colors">
+                  Lihat Produk
+                </span>
+                <span class="inline-flex items-center gap-1.5 text-xs font-bold text-[#005a66] bg-teal-50 hover:bg-teal-100 px-3.5 py-2 rounded-xl transition-all duration-300 group-hover:translate-x-1">
+                  <span>Detail UMKM</span>
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                  </svg>
+                </span>
+              </div>
+            </div>
+
           </div>
 
         </div>
@@ -78,19 +103,26 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const sliderRef = ref(null);
 const isLoading = ref(true);
 const umkmList = ref([]);
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 const ASSET_BASE_URL = API_BASE_URL ? API_BASE_URL.replace(/\/api$/, '') : '';
 
-const getImageUrl = (imagePath, fallbackText) => {
+const getImageUrl = (imagePath, fallbackText = 'UMKM Buniara') => {
   if (!imagePath) return `https://dummyimage.com/600x400/a3a3a3/ffffff&text=${fallbackText.replace(/ /g, '+')}`;
   if (imagePath.startsWith('http') || imagePath.startsWith('data:image')) return imagePath;
   if (imagePath.startsWith('/uploads')) return `${ASSET_BASE_URL}${imagePath}`;
   return imagePath;
+};
+
+const goToDetail = (id) => {
+  if (!id) return;
+  router.push(`/umkm/${id}`);
 };
 
 const fetchUMKM = async () => {

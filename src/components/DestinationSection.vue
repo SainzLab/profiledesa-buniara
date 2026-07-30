@@ -29,33 +29,54 @@
 
             <div ref="sliderRef" class="flex overflow-x-auto gap-4 md:gap-6 snap-x snap-mandatory scroll-smooth hide-scrollbar pb-10 pt-4 px-4 md:px-2">
               
-              <router-link 
+              <div 
                 v-for="(item, index) in wisataList" 
                 :key="item.id"
-                :to="`/wisata/${item.id}`"
-                class="block shrink-0 w-[85%] sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)] snap-center bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl border border-gray-100 transition-all duration-500 hover:-translate-y-2 group cursor-pointer focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+                @click="goToDetail(item.id)"
+                class="shrink-0 w-[85%] sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)] snap-center bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl border border-gray-100 transition-all duration-500 hover:-translate-y-2 group cursor-pointer flex flex-col justify-between"
                 :class="`animate-stagger-${(index % 5) + 1}`"
               >
               
-                <div class="overflow-hidden relative aspect-[4/3] w-full">
-                  <img 
-                    :src="getImageUrl(item.image, item.judul)" 
-                    :alt="item.judul" 
-                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
-                  />
-                  <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div>
+                  <div class="overflow-hidden relative aspect-[4/3] w-full">
+                    <img 
+                      :src="getImageUrl(item.image || item.gambar_hero, item.judul)" 
+                      :alt="item.judul" 
+                      class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                    />
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    
+                    <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-[#005a66] text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
+                      {{ item.kategori || 'Wisata' }}
+                    </div>
+                  </div>
                   
-                  <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-[#005a66] text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
-                    {{ item.kategori }}
+                  <div class="p-6 relative bg-white pb-4">
+                    <h3 class="font-extrabold text-xl text-gray-800 group-hover:text-[#005a66] transition-colors mb-1 line-clamp-1">
+                      {{ item.judul }}
+                    </h3>
+                    
+                    <p class="text-sm text-gray-500 leading-relaxed line-clamp-3">
+                      {{ item.deskripsi_singkat || item.deskripsi }}
+                    </p>
                   </div>
                 </div>
-                
-                <!-- Content Wrapper -->
-                <div class="p-6 relative bg-white">
-                  <h3 class="font-extrabold text-xl text-gray-800 group-hover:text-[#005a66] transition-colors mb-2">{{ item.judul }}</h3>
-                  <p class="text-sm text-gray-500 leading-relaxed line-clamp-3">{{ item.deskripsi }}</p>
+
+                <div class="px-6 pb-6 pt-2 bg-white">
+                  <div class="pt-4 border-t border-gray-100 flex items-center justify-between">
+                    <span class="text-xs font-semibold text-gray-400 group-hover:text-gray-600 transition-colors">
+                      Jelajahi
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 text-xs font-bold text-[#005a66] bg-teal-50 hover:bg-teal-100 px-3.5 py-2 rounded-xl transition-all duration-300 group-hover:translate-x-1">
+                      <span>Detail Wisata</span>
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                      </svg>
+                    </span>
+                  </div>
                 </div>
-              </router-link>
+
+              </div>
               
             </div>
 
@@ -90,7 +111,9 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const sliderRef = ref(null);
 const isLoading = ref(true);
 const wisataList = ref([]);
@@ -98,7 +121,7 @@ const wisataList = ref([]);
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const ASSET_BASE_URL = API_BASE_URL ? API_BASE_URL.replace(/\/api$/, '') : '';
 
-const getImageUrl = (imagePath, fallbackText) => {
+const getImageUrl = (imagePath, fallbackText = 'Wisata Buniara') => {
   if (!imagePath) return `https://dummyimage.com/400x300/a3a3a3/ffffff&text=${fallbackText.replace(/ /g, '+')}`;
   
   let normalizedPath = imagePath;
@@ -112,6 +135,11 @@ const getImageUrl = (imagePath, fallbackText) => {
   
   const formattedPath = normalizedPath.startsWith('/') ? normalizedPath : `/${normalizedPath}`;
   return `${ASSET_BASE_URL}${formattedPath}`;
+};
+
+const goToDetail = (id) => {
+  if (!id) return;
+  router.push(`/wisata/${id}`);
 };
 
 const fetchWisata = async () => {

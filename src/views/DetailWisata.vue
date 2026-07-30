@@ -167,11 +167,11 @@ const loading = ref(true);
 const error = ref(null);
 
 const fallbacks = {
-  hero: 'https://images.unsplash.com/photo-1433086966358-54859d0ed716?q=80&w=2000&auto=format&fit=crop',
-  galeri1: 'https://images.unsplash.com/photo-1433086966358-54859d0ed716?q=80&w=800&auto=format&fit=crop',
-  galeri2: 'https://images.unsplash.com/photo-1518182170546-076616fd6251?q=80&w=800&auto=format&fit=crop',
-  galeri3: 'https://images.unsplash.com/photo-1511497584788-876760111969?q=80&w=800&auto=format&fit=crop',
-  galeri4: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=1200&auto=format&fit=crop',
+  hero: 'https://placehold.co/2000x1000/e2e8f0/475569?text=IMAGE',
+  galeri1: 'https://placehold.co/800x600/e2e8f0/475569?text=IMAGE',
+  galeri2: 'https://placehold.co/800x600/e2e8f0/475569?text=IMG',
+  galeri3: 'https://placehold.co/800x600/e2e8f0/475569?text=IMAGE',
+  galeri4: 'https://placehold.co/1200x800/e2e8f0/475569?text=IMG',
 };
 
 const getImageUrl = (imagePath, type) => {

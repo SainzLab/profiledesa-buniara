@@ -11,6 +11,16 @@ import AdminPenggunaView from '../views/AdminPenggunaView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  
+  // // Konfigurasi agar scroll otomatis kembali ke atas setiap pindah halaman
+  // scrollBehavior(to, from, savedPosition) {
+  //   if (savedPosition) {
+  //     return savedPosition;
+  //   } else {
+  //     return { top: 0, behavior: 'smooth' };
+  //   }
+  // },
+
   routes: [
     // ==========================================
     // HALAMAN PUBLIK (Tidak butuh login)
@@ -35,6 +45,12 @@ const router = createRouter({
       path: '/wisata/:id',
       name: 'DetailWisata',
       component: () => import('../views/DetailWisata.vue') 
+    },
+    // --> PENAMBAHAN ROUTE DETAIL UMKM
+    {
+      path: '/umkm/:id',
+      name: 'DetailUmkm',
+      component: () => import('../views/DetailUmkm.vue')
     },
 
     // ==========================================

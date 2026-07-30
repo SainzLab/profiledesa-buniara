@@ -161,7 +161,6 @@
 
             <div>
               <h4 class="text-base font-bold text-gray-900 border-b pb-2 mb-4">Media & Galeri</h4>
-              
               <div class="mb-6">
                 <label class="block text-sm font-semibold text-gray-700 mb-1.5">Gambar Banner Utama <span class="text-red-500">*</span></label>
                 <div v-if="previews.image" class="mb-3 relative w-full pt-[40%] md:pt-[25%] bg-gray-100 rounded-xl overflow-hidden border border-gray-200 group">
