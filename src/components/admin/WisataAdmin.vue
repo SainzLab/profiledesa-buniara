@@ -38,7 +38,7 @@
 
     <div v-else-if="daftarWisata.length === 0" class="flex flex-col items-center justify-center py-20 bg-white rounded-2xl border border-gray-100 shadow-sm">
       <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
-        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 00-2 2z"></path></svg>
       </div>
       <p class="text-gray-500 font-medium">Belum ada data wisata.</p>
     </div>
@@ -47,7 +47,7 @@
       <div v-for="item in daftarWisata" :key="item.id" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col hover:shadow-md transition-all h-full group">
         
         <div class="relative w-full pt-[75%] bg-gray-100 flex-shrink-0 overflow-hidden">
-          <img v-if="getImageUrl(item.image)" :src="getImageUrl(item.image)" :alt="item.judul" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+          <img v-if="getImageUrl(item.image || item.gambar_hero)" :src="getImageUrl(item.image || item.gambar_hero)" :alt="item.judul" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
           <div v-else class="absolute inset-0 flex flex-col items-center justify-center text-gray-400 bg-gray-100 group-hover:bg-gray-200 transition-colors">   
             <span class="text-sm font-semibold opacity-70">No Image</span>
           </div>
@@ -85,19 +85,19 @@
     </div>
 
     <div v-if="showModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-opacity">
-      <div class="bg-white rounded-2xl w-full max-w-4xl overflow-hidden shadow-2xl max-h-[90vh] flex flex-col transform transition-all">
-        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-          <h3 class="text-xl font-bold text-gray-900">{{ isEditing ? 'Edit Konten Wisata' : 'Tambah Konten Wisata Baru' }}</h3>
-          <button @click="tutupModal" class="text-gray-400 hover:text-gray-600 bg-white rounded-full p-1 hover:bg-gray-100 transition-colors">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+      <div class="bg-white rounded-3xl w-full max-w-5xl overflow-hidden shadow-2xl max-h-[92vh] flex flex-col transform transition-all">
+        <div class="px-8 py-5 border-b border-gray-100 flex justify-between items-center bg-white">
+          <h3 class="text-xl font-bold text-gray-900">{{ isEditing ? 'Edit Konten Wisata' : 'Tambah Konten Wisata' }}</h3>
+          <button @click="tutupModal" class="text-gray-400 hover:text-gray-600 bg-white rounded-full p-1.5 hover:bg-gray-100 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
           </button>
         </div>
         
-        <div class="overflow-y-auto p-6">
-          <form @submit.prevent="simpanWisata" class="space-y-8">
+        <div class="overflow-y-auto px-8 py-6">
+          <form @submit.prevent="simpanWisata" class="space-y-10">
             
             <div>
-              <h4 class="text-base font-bold text-gray-900 border-b pb-2 mb-4">Informasi Dasar</h4>
+              <h4 class="text-base font-bold text-gray-900 border-b pb-2 mb-6">Informasi Dasar</h4>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
                   <label class="block text-sm font-semibold text-gray-700 mb-1.5">Judul Wisata <span class="text-red-500">*</span></label>
@@ -121,13 +121,18 @@
 
                 <div class="md:col-span-2">
                   <label class="block text-sm font-semibold text-gray-700 mb-1.5">Tentang Wisata (Penjelasan Detail)</label>
-                  <textarea v-model="formWisata.tentang" rows="6" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm transition-all focus:outline-none focus:border-gray-400 text-gray-900"></textarea>
+                  <textarea v-model="formWisata.tentang" rows="5" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm transition-all focus:outline-none focus:border-gray-400 text-gray-900"></textarea>
                   <p class="text-xs text-gray-500 mt-1">Gunakan tombol 'Enter' untuk memisahkan paragraf. Ini adalah isi lengkap cerita wisata Anda.</p>
                 </div>
 
                 <div class="md:col-span-2">
                   <label class="block text-sm font-semibold text-gray-700 mb-1.5">URL Google Maps (Opsional)</label>
-                  <input type="text" v-model="formWisata.peta_url" placeholder="Paste link / iframe embed Google Maps di sini" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm transition-all focus:outline-none focus:border-gray-400 text-gray-900">
+                  <input 
+                    type="text" 
+                    v-model="formWisata.peta_url" 
+                    placeholder='<iframe src="https://www.google.com/maps/embed?pb=..."' 
+                    class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-gray-400 text-gray-900 font-mono text-xs"
+                  >
                 </div>
               </div>
             </div>
@@ -160,38 +165,99 @@
             </div>
 
             <div>
-              <h4 class="text-base font-bold text-gray-900 border-b pb-2 mb-4">Media & Galeri</h4>
-              <div class="mb-6">
-                <label class="block text-sm font-semibold text-gray-700 mb-1.5">Gambar Banner Utama <span class="text-red-500">*</span></label>
-                <div v-if="previews.image" class="mb-3 relative w-full pt-[40%] md:pt-[25%] bg-gray-100 rounded-xl overflow-hidden border border-gray-200 group">
-                  <img :src="previews.image" class="absolute inset-0 w-full h-full object-cover" />
-                  <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <button type="button" @click="hapusPreview('image')" class="bg-red-500 text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-red-600 shadow-sm flex items-center">
+              <h4 class="text-base font-bold text-gray-900 border-b border-gray-300 pb-2 mb-6">Media & Galeri</h4>
+
+              <div class="mb-8">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                  Gambar Banner Utama (gambar_hero) <span class="text-red-500">*</span>
+                </label>
+                
+                <div class="relative w-full h-64 md:h-72 bg-[#f8f9fa] rounded-2xl border border-gray-200 overflow-hidden flex items-center justify-center group mb-3">
+                  <img v-if="previews.gambar_hero" :src="previews.gambar_hero" class="w-full h-full object-cover" />
+                  <span v-else class="text-sm font-medium text-gray-400">Belum ada gambar</span>
+                  
+                  <div v-if="previews.gambar_hero" class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <button type="button" @click="hapusPreview('gambar_hero')" class="bg-red-500 text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-red-600 shadow-sm">
                       Hapus
                     </button>
                   </div>
                 </div>
-                <input type="file" @change="e => handleFileUpload(e, 'image')" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-[#0f644e] border border-gray-300 rounded-xl p-1.5 focus:outline-none">
+
+                <div class="border border-gray-200 rounded-2xl p-2 bg-white flex items-center">
+                  <input 
+                    type="file" 
+                    @change="e => handleFileUpload(e, 'gambar_hero')" 
+                    accept="image/*" 
+                    class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-5 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 focus:outline-none"
+                  />
+                </div>
               </div>
 
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div v-for="i in 4" :key="`galeri_${i}`">
-                  <label class="block text-sm font-semibold text-gray-700 mb-1.5">Galeri {{ i }}</label>
-                  <div v-if="previews[`galeri_${i}`]" class="mb-2 relative w-full pt-[75%] bg-gray-100 rounded-xl overflow-hidden border border-gray-200 group">
-                    <img :src="previews[`galeri_${i}`]" class="absolute inset-0 w-full h-full object-cover" />
-                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <button type="button" @click="hapusPreview(`galeri_${i}`)" class="bg-red-500 text-white px-2 py-1 rounded-md text-xs hover:bg-red-600">Hapus</button>
+              <div class="mb-8 w-full md:w-80">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                  Foto Katalog Depan (image) <span class="text-red-500">*</span>
+                </label>
+                
+                <div class="relative w-full h-48 bg-[#f8f9fa] rounded-2xl border border-gray-200 overflow-hidden flex items-center justify-center group mb-3">
+                  <img v-if="previews.image" :src="previews.image" class="w-full h-full object-cover" />
+                  <span v-else class="text-sm font-medium text-gray-400">Belum ada gambar</span>
+                  
+                  <div v-if="previews.image" class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <button type="button" @click="hapusPreview('image')" class="bg-red-500 text-white px-3 py-1.5 rounded-xl text-sm font-semibold hover:bg-red-600 shadow-sm">
+                      Hapus
+                    </button>
+                  </div>
+                </div>
+                
+                <div class="border border-gray-200 rounded-2xl p-2 bg-white flex items-center">
+                  <input 
+                    type="file" 
+                    @change="e => handleFileUpload(e, 'image')" 
+                    accept="image/*" 
+                    class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-semibold text-gray-800 mb-3">
+                  Galeri Wisata (1-4)
+                </label>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                  <div v-for="i in 4" :key="`galeri_${i}`" class="flex flex-col">
+                    <span class="text-sm font-semibold text-gray-700 mb-2">Galeri {{ i }}</span>
+                    
+                    <div class="relative w-full h-44 bg-[#f8f9fa] rounded-2xl border border-gray-200 overflow-hidden flex items-center justify-center group mb-2">
+                      <img v-if="previews[`galeri_${i}`]" :src="previews[`galeri_${i}`]" class="w-full h-full object-cover" />
+                      <span v-else class="text-xs font-medium text-gray-400">No Image</span>
+                      
+                      <div v-if="previews[`galeri_${i}`]" class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <button type="button" @click="hapusPreview(`galeri_${i}`)" class="bg-red-500 text-white px-2.5 py-1 rounded-lg text-xs font-semibold hover:bg-red-600 shadow-sm">
+                          Hapus
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="border border-gray-200 rounded-xl p-1.5 bg-white flex items-center mt-auto">
+                      <input 
+                        type="file" 
+                        @change="e => handleFileUpload(e, `galeri_${i}`)" 
+                        accept="image/*" 
+                        class="w-full text-xs text-gray-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 focus:outline-none"
+                      />
                     </div>
                   </div>
-                  <input type="file" @change="e => handleFileUpload(e, `galeri_${i}`)" accept="image/*" class="w-full text-xs text-gray-500 border border-gray-300 rounded-lg p-1">
                 </div>
               </div>
 
             </div>
 
-            <div class="mt-8 flex justify-end space-x-3 pt-5 border-t border-gray-100">
-              <button type="button" @click="tutupModal" class="px-5 py-2.5 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors">Batal</button>
-              <button type="submit" :disabled="isSubmitting" class="px-5 py-2.5 text-sm font-semibold text-white bg-[#0f644e] rounded-xl hover:bg-[#0a4d3c] disabled:opacity-70 disabled:cursor-not-allowed flex items-center transition-colors shadow-sm">
+            <div class="flex justify-end space-x-3 pt-6 border-t border-gray-100">
+              <button type="button" @click="tutupModal" class="px-7 py-3 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-2xl hover:bg-gray-50 transition-colors">
+                Batal
+              </button>
+              <button type="submit" :disabled="isSubmitting" class="px-7 py-3 text-sm font-semibold text-white bg-[#0f644e] rounded-2xl hover:bg-[#0a4d3c] disabled:opacity-70 disabled:cursor-not-allowed flex items-center transition-colors shadow-md">
                 <svg v-if="isSubmitting" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                 {{ isSubmitting ? 'Menyimpan...' : 'Simpan Konten' }}
               </button>
@@ -265,6 +331,7 @@ const formWisata = reactive({
   peta_url: '',
   fasilitas: [],
   image: '',
+  gambar_hero: '',
   galeri_1: '',
   galeri_2: '',
   galeri_3: '',
@@ -274,6 +341,7 @@ const formWisata = reactive({
 
 const filesToUpload = reactive({
   image: null,
+  gambar_hero: null,
   galeri_1: null,
   galeri_2: null,
   galeri_3: null,
@@ -282,6 +350,7 @@ const filesToUpload = reactive({
 
 const previews = reactive({
   image: '',
+  gambar_hero: '',
   galeri_1: '',
   galeri_2: '',
   galeri_3: '',
@@ -306,7 +375,7 @@ const hapusFasilitas = (index) => {
 const resetForm = () => {
   Object.assign(formWisata, {
     id: null, judul: '', kategori: '', deskripsi: '', tentang: '', peta_url: '',
-    fasilitas: [], image: '', galeri_1: '', galeri_2: '', galeri_3: '', galeri_4: '', isPublished: true
+    fasilitas: [], image: '', gambar_hero: '', galeri_1: '', galeri_2: '', galeri_3: '', galeri_4: '', isPublished: true
   });
   
   Object.keys(filesToUpload).forEach(k => filesToUpload[k] = null);
@@ -336,9 +405,11 @@ const bukaModalEdit = (item) => {
     formWisata.fasilitas = [];
   }
 
-  ['image', 'galeri_1', 'galeri_2', 'galeri_3', 'galeri_4'].forEach(field => {
-    formWisata[field] = item[field] || '';
-    previews[field] = getImageUrl(item[field]);
+  const fields = ['image', 'gambar_hero', 'galeri_1', 'galeri_2', 'galeri_3', 'galeri_4'];
+  fields.forEach(field => {
+    const val = item[field] || '';
+    formWisata[field] = val;
+    previews[field] = getImageUrl(val);
   });
   
   isEditing.value = true;
@@ -408,8 +479,8 @@ const simpanWisata = async () => {
       
     const method = isEditing.value ? 'PUT' : 'POST';
 
-    if (!isEditing.value && !filesToUpload.image) {
-      showNotification("Gambar banner utama wajib diunggah!", "error");
+    if (!isEditing.value && (!filesToUpload.image || !filesToUpload.gambar_hero)) {
+      showNotification("Foto Katalog Depan dan Gambar Hero Banner wajib diunggah!", "error");
       isSubmitting.value = false;
       return;
     }
@@ -424,7 +495,7 @@ const simpanWisata = async () => {
     
     formData.append('fasilitas', JSON.stringify(formWisata.fasilitas));
 
-    const imageFields = ['image', 'galeri_1', 'galeri_2', 'galeri_3', 'galeri_4'];
+    const imageFields = ['image', 'gambar_hero', 'galeri_1', 'galeri_2', 'galeri_3', 'galeri_4'];
     imageFields.forEach(field => {
       if (isEditing.value && !filesToUpload[field]) {
         formData.append(field, formWisata[field] || '');
