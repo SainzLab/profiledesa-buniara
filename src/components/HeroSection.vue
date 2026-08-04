@@ -99,20 +99,25 @@ const fetchHeroKonten = async () => {
       if (data.hero_subheadline) {
         heroData.value.subtitle = data.hero_subheadline;
       }
+      
       if (data.hero_image) {
-        if (data.hero_image.startsWith('/uploads')) {
-          const rootUrl = API_BASE_URL.replace('/api', '');
+        if (data.hero_image.startsWith('/')) {
+          const rootUrl = API_BASE_URL.replace(/\/api\/?$/, '');
           heroData.value.image = `${rootUrl}${data.hero_image}`;
-        } else {
+        } 
+        else if (!data.hero_image.startsWith('http://') && !data.hero_image.startsWith('https://')) {
+          heroData.value.image = `https://${data.hero_image}`;
+        } 
+        else {
           heroData.value.image = data.hero_image;
         }
       }
-      console.log("[DEBUG] Sukses update konten ke layar!");
+      console.log("Sukses update konten ke layar!");
     } else {
-      console.warn("[DEBUG] API merespons, tapi success: false", result);
+      console.warn("API merespons, tapi success: false", result);
     }
   } catch (error) {
-    console.error('[DEBUG] GAGAL FETCH API :', error.message);
+    console.error('GAGAL FETCH API :', error.message);
     
     heroData.value.title = 'Harmoni Alam, Pertanian,';
     heroData.value.highlight = 'dan Pariwisata Buniara';
