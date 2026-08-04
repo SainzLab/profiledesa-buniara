@@ -9,18 +9,17 @@ import AdminWisataView from '../views/AdminWisataView.vue'
 import AdminUmkmView from '../views/AdminUmkmView.vue'
 import AdminPenggunaView from '../views/AdminPenggunaView.vue'
 
+function isTokenExpired(token) {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]))
+    return payload.exp * 1000 < Date.now()
+  } catch (e) {
+    return true
+  }
+}
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  
-  // // Konfigurasi agar scroll otomatis kembali ke atas setiap pindah halaman
-  // scrollBehavior(to, from, savedPosition) {
-  //   if (savedPosition) {
-  //     return savedPosition;
-  //   } else {
-  //     return { top: 0, behavior: 'smooth' };
-  //   }
-  // },
-
   routes: [
     // ==========================================
     // HALAMAN PUBLIK (Tidak butuh login)
@@ -46,7 +45,6 @@ const router = createRouter({
       name: 'DetailWisata',
       component: () => import('../views/DetailWisata.vue') 
     },
-    // --> PENAMBAHAN ROUTE DETAIL UMKM
     {
       path: '/umkm/:id',
       name: 'DetailUmkm',
@@ -96,22 +94,28 @@ const router = createRouter({
 })
 
 // ==========================================
-// NAVIGATION GUARD
+// NAVIGATION GUARD (DIPERBARUI)
 // ==========================================
 router.beforeEach((to, from, next) => {
-  const isAuthenticated = localStorage.getItem('token') !== null;
+  const token = localStorage.getItem('token')
+  const isAuthValid = token !== null && !isTokenExpired(token)
 
-  if (to.meta.requiresAuth && !isAuthenticated) {
-    next({ name: 'admin-login' });
-  } 
-  
-  else if (to.meta.requiresGuest && isAuthenticated) {
-    next({ name: 'admin' });
-  } 
-  
-  else {
-    next();
+  if (token && !isAuthValid) {
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
   }
-});
+
+  if (to.meta.requiresAuth && !isAuthValid) {
+    next({ name: 'admin-login' })
+  } 
+
+  else if (to.meta.requiresGuest && isAuthValid) {
+    next({ name: 'admin' })
+  } 
+
+  else {
+    next()
+  }
+})
 
 export default router
